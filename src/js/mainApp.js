@@ -7,9 +7,17 @@ class MainApp extends Base {
     this.writer;
     this.historyIndex = -1;
     this.lineHistory = [];
+
+    // For DEMO ONLY
+    this.mph;
+    this.kmh;
   }
   init() {
     console.log("### Main app class init ###");
+
+    this.mph = document.querySelector("#mph");
+    this.kmh = document.querySelector("#kmh");
+
     this.connectSerial();
   }
 
@@ -20,8 +28,6 @@ class MainApp extends Base {
 
   async demoInit() {
     const _this = this;
-    const mph = document.querySelector("#mph");
-    const kmh = document.querySelector("#kmh");
   }
 
   async connectSerial() {
@@ -34,12 +40,19 @@ class MainApp extends Base {
        * Firstly, use requestport to prompt user to select a port via requestPort(), once a port is selected
        * we can use get ports by using getPorts() automatically
        *
+       * A very good reference if we want to use Electron with Serial port web api
+       * https://gist.github.com/jkleinsc/284893c7f01d3cb4559508ca06919481#file-main-js-L21
+       *
        */
-      //   _this.port = await navigator.serial.requestPort();
+      if (_this.port) {
+        console.log("### PORT exist, do not request again! Only listening... ###");
+        return false; // if the port is ready, return;
+      }
+      _this.port = await navigator.serial.requestPort();
 
-      var ports = await navigator.serial.getPorts();
-      _this.port = ports[0];
-      //   console.log(ports);
+      // var ports = await navigator.serial.getPorts();
+      // console.log(ports);
+      // _this.port = ports[0];
       if (_this.port) {
         //     console.log(_this.port);
         await _this.port.open({ baudRate: 9600, flowControl: "none" });
@@ -68,6 +81,7 @@ class MainApp extends Base {
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
     const reader = textDecoder.readable.getReader();
+
     // Listen to data coming from the serial device.
     while (true) {
       const { value, done } = await reader.read();
@@ -81,14 +95,18 @@ class MainApp extends Base {
       // appendToTerminal(value);
 
       if (parseInt(value) > 0) {
+        console.log(`### Value from sensor: ${parseInt(value)}`);
         const kmhVal = Math.floor(parseInt(value) * 1.61);
-        mph.innerHTML = `${value} mph`;
-        kmh.innerHTML = `${kmhVal} km/h`;
 
-        setTimeout(() => {
-          mph.innerHTML = `0 mph`;
-          kmh.innerHTML = `0 km/h`;
-        }, 1000);
+        if (_this.mph && _this.kmh) {
+          _this.mph.innerHTML = `${value} mph`;
+          _this.kmh.innerHTML = `${kmhVal} km/h`;
+
+          setTimeout(() => {
+            _this.mph.innerHTML = `0 mph`;
+            _this.kmh.innerHTML = `0 km/h`;
+          }, 1000);
+        }
       }
     }
   }
