@@ -1,13 +1,13 @@
 {
-  "name": "app-name",
+  "name": "nzrm_speed_sensor_2023",
   "version": "1.0.0",
-  "description": "App description",
+  "description": "The Speed Detector/Sensor for New Zealand Rugby Museum 2023.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "package": "electron-builder && npm version patch"
   },
-  "repository": "https://github.com/Squall966/nz-grass-fed-difference",
+  "repository": "https://github.com/Squall966/nzrm_speed_sensor",
   "keywords": [
     "Electron",
     "quick",
@@ -22,8 +22,8 @@
   },
   "build": {
     "generateUpdatesFilesForAllChannels": true,
-    "appId": "com.electron.app_name",
-    "productName": "App Name",
+    "appId": "com.electron.nzrm_speed_sensor_2023",
+    "productName": "NZRM Speed Sensor 2023",
     "asar": false,
     "directories": {
       "output": "releases/${platform}/${arch}"
