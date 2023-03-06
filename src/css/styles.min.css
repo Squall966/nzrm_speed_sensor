@@ -246,3 +246,24 @@ body {
 .title {
   background: lime;
 }
+
+.demo {
+  display: flex;
+  background-color: rgb(245, 248, 249);
+}
+.demo #demo-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  text-align: center;
+}
+.demo .text-a {
+  font-size: 4rem;
+  text-transform: uppercase;
+}
+.demo #connect {
+  position: absolute;
+  left: 50%;
+}

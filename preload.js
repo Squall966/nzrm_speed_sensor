@@ -3,8 +3,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("dialog", {
   show: async (message) => {
     const result = await ipcRenderer.invoke("show-dialog", message);
-    console.log(result);
-    return 1;
+    return result;
   },
 
   abort: (message) => {

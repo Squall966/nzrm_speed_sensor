@@ -29,6 +29,13 @@ barba.init({
         console.log("### Home Page should init here");
       },
     },
+    {
+      namespace: "demo",
+      beforeEnter(data) {
+        console.log("### Main app should init here");
+        mainApp.init();
+      },
+    },
   ],
 });
 

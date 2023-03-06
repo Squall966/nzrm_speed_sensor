@@ -8,6 +8,8 @@ const logger = require("./modules/logger.js");
 // const db = require("./modules/database");
 const fs = require("fs");
 
+app.commandLine.appendSwitch("enable-features", "ElectronSerialChooser");
+
 // Hot Reload
 if (isDev) {
   try {
@@ -49,6 +51,7 @@ function createWindow(width = null, height = null) {
       allowRunningInsecureContent: true,
       webSecurity: false,
       enableRemoteModule: true,
+      enableBlinkFeatures: "Serial",
     },
   });
 
@@ -74,6 +77,14 @@ function createWindow(width = null, height = null) {
    */
   ipcMain.handle("show-dialog", async (e, msg) => {
     if (msg) {
+      const result = await dialog.showMessageBox(mainWindow, { message: msg, title: "NZ Grass-fed Difference" });
+      return result;
+    }
+  });
+
+  /** 
+  ipcMain.handle("show-dialog", async (e, msg) => {
+    if (msg) {
       if (abortDialog.signal.aborted) {
         abortDialog = new AbortController();
       }
@@ -82,9 +93,35 @@ function createWindow(width = null, height = null) {
     }
   });
 
+  ipcMain.on("show-dialog", (e, msg) => {
+    if (msg)
+      dialog.showMessageBox(mainWindow, {
+        title: "NZ Grass-fed Difference",
+        message: msg,
+      });
+  });
+*/
+
   ipcMain.on("abort-dialog", (e, msg) => {
     console.log(msg);
     if (msg) abortDialog.abort();
+  });
+
+  mainWindow.webContents.session.on("select-serial-port", (event, portList, webContents, callback) => {
+    console.log("SELECT-SERIAL-PORT FIRED WITH", portList);
+    event.preventDefault();
+    let selectedPort = portList.find((device) => {
+      // Automatically pick a specific device instead of prompting user
+      //return device.vendorId == 0x2341 && device.productId == 0x0043;
+
+      // Automatically return the first device
+      return true;
+    });
+    if (!selectedPort) {
+      callback("");
+    } else {
+      callback(selectedPort.portId);
+    }
   });
 } /** CREATE WINDOW ENDS */
 
@@ -133,5 +170,3 @@ ipcMain.on("appDir", (e, msg) => {
     e.returnValue = appDir;
   }
 });
-
-console.log(process.versions);
