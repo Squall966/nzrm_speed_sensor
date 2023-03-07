@@ -30,11 +30,18 @@
         <a href="demo.html">
           <button>Go Demo</button>
         </a>
+        <a href="#" onclick="mainApp.resetTopSpeed()">
+          <button>Reset Top Speed</button>
+        </a>
       </div>
 
       <div data-barba="container" data-barba-namespace="demo" class="main-container demo">
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
         <!-- <button onclick="mainApp.connectSerial()" id="connect">Connect</button> -->
+        <div id="top-speed-wrapper">
+          <div id="top-speed-title">Top Speed</div>
+          <div id="top-speed-meter">0 km/h</div>
+        </div>
         <div id="demo-wrapper">
           <div id="mph" class="text-a">0 mph</div>
           <br />

@@ -267,3 +267,24 @@ body {
   position: absolute;
   left: 50%;
 }
+.demo #top-speed-wrapper {
+  position: absolute;
+  display: flex;
+  background-color: white;
+  left: 50%;
+  transform: translate(-50%, 20%);
+  border-radius: 1rem;
+  box-sizing: border-box;
+  padding: 5vh 5vw;
+  flex-direction: column;
+  align-items: center;
+}
+.demo #top-speed-wrapper #top-speed-title {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: rgb(88, 88, 88);
+}
+.demo #top-speed-wrapper #top-speed-meter {
+  font-size: 3rem;
+}

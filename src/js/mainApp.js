@@ -8,6 +8,10 @@ class MainApp extends Base {
     this.historyIndex = -1;
     this.lineHistory = [];
 
+    this.connect_to_serial = true;
+    this.top_speed = 0;
+    this.top_speed_meter;
+
     // For DEMO ONLY
     this.mph;
     this.kmh;
@@ -17,8 +21,18 @@ class MainApp extends Base {
 
     this.mph = document.querySelector("#mph");
     this.kmh = document.querySelector("#kmh");
+    this.top_speed_meter = document.querySelector("#top-speed-meter");
 
-    this.connectSerial();
+    this.resetTopSpeed();
+
+    if (this.connect_to_serial) this.connectSerial();
+  }
+
+  resetTopSpeed() {
+    // reset top speed
+    this.top_speed = 0;
+    if (this.top_speed_meter) this.top_speed_meter.innerHTML = this.top_speed + " km/h";
+    console.log(`### TOP SPEED is reset: ${this.top_speed}`);
   }
 
   async dialogMessage(msg) {
@@ -95,12 +109,22 @@ class MainApp extends Base {
       // appendToTerminal(value);
 
       if (parseInt(value) > 0) {
-        console.log(`### Value from sensor: ${parseInt(value)}`);
+        // console.log(`### Value from sensor: ${parseInt(value)}`);
         const kmhVal = Math.floor(parseInt(value) * 1.61);
 
         if (_this.mph && _this.kmh) {
           _this.mph.innerHTML = `${value} mph`;
           _this.kmh.innerHTML = `${kmhVal} km/h`;
+
+          if (kmhVal > _this.top_speed) {
+            _this.top_speed = kmhVal;
+
+            if (_this.top_speed_meter) {
+              _this.top_speed_meter.innerHTML = _this.top_speed + " km/h";
+            }
+
+            console.log(`### TOP SPEED: ${_this.top_speed}`);
+          }
 
           setTimeout(() => {
             _this.mph.innerHTML = `0 mph`;
