@@ -13,6 +13,7 @@ class MainApp extends Base {
     this.top_speed_meter;
 
     this.reader;
+    this.readableStreamClosed;
 
     // For DEMO ONLY
     this.mph;
@@ -46,6 +47,29 @@ class MainApp extends Base {
 
   async demoInit() {
     const _this = this;
+  }
+
+  async closeSerialPort() {
+    /**
+     * With error:
+     * !!! Cannot close serial port!: TypeError: Failed to execute 'close' on 'SerialPort': Cannot abort a locked stream
+     */
+    const _this = this;
+    try {
+      if (_this.reader && _this.readableStreamClosed) {
+        _this.reader.cancel();
+        await _this.readableStreamClosed.catch(() => {
+          // Ignore the error
+        });
+        await _this.reader.close();
+        await _this.port.close();
+
+        console.info("### Port is closed!! ###");
+      }
+    } catch (error) {
+      console.log("!!! Cannot close serial port!: " + error);
+      console.log("!!! Please go home and refresh the app!!! For DEV ONLY!!");
+    }
   }
 
   async connectSerial() {
@@ -93,7 +117,7 @@ class MainApp extends Base {
       }
     } catch (error) {
       //   _this.dialogMessage("Serial Connection Failed: " + error);
-      console.log("Serial Connection Failed: " + error);
+      console.error("Serial Connection Failed: " + error);
     }
   }
 
@@ -101,7 +125,7 @@ class MainApp extends Base {
     const _this = this;
 
     const textDecoder = new TextDecoderStream();
-    const readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
+    _this.readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
     _this.reader = textDecoder.readable.getReader();
 
     // const reader = _this.port.readable.getReader();
@@ -109,11 +133,11 @@ class MainApp extends Base {
     // Listen to data coming from the serial device.
     let readable_value = [];
     while (true) {
-      const { value, done } = await reader.read();
+      const { value, done } = await _this.reader.read();
       if (done) {
         // Allow the serial port to be closed later.
         console.log("[readLoop] DONE", done);
-        reader.releaseLock();
+        _this.reader.releaseLock();
         break;
       }
       // value is a string.
