@@ -12,9 +12,12 @@ class MainApp extends Base {
     this.top_speed = 0;
     this.top_speed_meter;
 
+    this.reader;
+
     // For DEMO ONLY
     this.mph;
     this.kmh;
+    this.clear_display_timeout = 3000;
   }
   init() {
     console.log("### Main app class init ###");
@@ -23,6 +26,7 @@ class MainApp extends Base {
     this.kmh = document.querySelector("#kmh");
     this.top_speed_meter = document.querySelector("#top-speed-meter");
 
+    /** Reset and initialise */
     this.resetTopSpeed();
 
     if (this.connect_to_serial) this.connectSerial();
@@ -69,7 +73,10 @@ class MainApp extends Base {
       // _this.port = ports[0];
       if (_this.port) {
         //     console.log(_this.port);
-        await _this.port.open({ baudRate: 9600, flowControl: "none" });
+        await _this.port.open({
+          baudRate: 9600,
+          flowControl: "none",
+        });
 
         let settings = {};
 
@@ -92,11 +99,15 @@ class MainApp extends Base {
 
   async listenToPort() {
     const _this = this;
+
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
-    const reader = textDecoder.readable.getReader();
+    _this.reader = textDecoder.readable.getReader();
+
+    // const reader = _this.port.readable.getReader();
 
     // Listen to data coming from the serial device.
+    let readable_value = [];
     while (true) {
       const { value, done } = await reader.read();
       if (done) {
@@ -108,29 +119,52 @@ class MainApp extends Base {
       // value is a string.
       // appendToTerminal(value);
 
+      // console.log(`### Value from sensor: ${parseInt(value)}`);
       if (parseInt(value) > 0) {
-        // console.log(`### Value from sensor: ${parseInt(value)}`);
-        const kmhVal = Math.floor(parseInt(value) * 1.61);
+        readable_value = [...readable_value, parseInt(value)];
+      }
+      if (value == "y") {
+        /**
+         * The end of the data is a "y", so we know we have got a full data now
+         * we should update the display and reset the array
+         */
+        console.log(readable_value);
+        const final_value = readable_value.join("");
+        _this.displaySpeed(final_value);
+        readable_value = [];
+      }
+    }
+  }
 
-        if (_this.mph && _this.kmh) {
-          _this.mph.innerHTML = `${value} mph`;
-          _this.kmh.innerHTML = `${kmhVal} km/h`;
+  displaySpeed(value) {
+    const _this = this;
 
-          if (kmhVal > _this.top_speed) {
-            _this.top_speed = kmhVal;
+    if (value == " " || !value) {
+      console.log("### No value!");
+      return false;
+    }
 
-            if (_this.top_speed_meter) {
-              _this.top_speed_meter.innerHTML = _this.top_speed + " km/h";
-            }
+    if (parseInt(value) > 0) {
+      const kmhVal = Math.floor(parseInt(value) * 1.61);
 
-            console.log(`### TOP SPEED: ${_this.top_speed}`);
+      if (_this.mph && _this.kmh) {
+        _this.mph.innerHTML = `${value} mph`;
+        _this.kmh.innerHTML = `${kmhVal} km/h`;
+
+        if (kmhVal > _this.top_speed) {
+          _this.top_speed = kmhVal;
+
+          if (_this.top_speed_meter) {
+            _this.top_speed_meter.innerHTML = _this.top_speed + " km/h";
           }
 
-          setTimeout(() => {
-            _this.mph.innerHTML = `0 mph`;
-            _this.kmh.innerHTML = `0 km/h`;
-          }, 1000);
+          console.log(`### TOP SPEED: ${_this.top_speed}`);
         }
+
+        setTimeout(() => {
+          _this.mph.innerHTML = `0 mph`;
+          _this.kmh.innerHTML = `0 km/h`;
+        }, _this.clear_display_timeout);
       }
     }
   }
