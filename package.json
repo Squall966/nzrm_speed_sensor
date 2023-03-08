@@ -22,7 +22,7 @@
   },
   "build": {
     "generateUpdatesFilesForAllChannels": true,
-    "appId": "com.electron.nzrm_speed_sensor_2023",
+    "appId": "com.inc.nzrm_speed_sensor_2023",
     "productName": "NZRM Speed Sensor 2023",
     "asar": false,
     "directories": {

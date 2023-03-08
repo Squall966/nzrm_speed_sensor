@@ -125,6 +125,10 @@ function createWindow(width = null, height = null) {
   });
 } /** CREATE WINDOW ENDS */
 
+/**
+ * Second window
+ */
+let secondWin;
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -132,13 +136,28 @@ app.whenReady().then(() => {
   const { screen } = require("electron");
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width, height } = primaryDisplay.workAreaSize;
+
+  let displays = screen.getAllDisplays();
+  let externalDisplay = displays.find((display) => {
+    return display.bounds.x !== 0 || display.bounds.y !== 0;
+  });
+
+  console.log("#####################################");
+  console.log(externalDisplay);
+  console.log("#####################################");
+  if (externalDisplay) {
+    secondWin = new BrowserWindow({
+      x: externalDisplay.bounds.x + 50,
+      y: externalDisplay.bounds.y + 50,
+    });
+    secondWin.loadURL("https://github.com");
+  }
+
   createWindow(width, height);
-  // createWindow();
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    // if (BrowserWindow.getAllWindows().length === 0) createWindow();
     if (BrowserWindow.getAllWindows().length === 0) createWindow(width, height);
   });
 });
