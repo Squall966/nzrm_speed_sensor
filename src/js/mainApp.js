@@ -96,11 +96,15 @@ class MainApp extends Base {
       // console.log(ports);
       // _this.port = ports[0];
       if (_this.port) {
-        //     console.log(_this.port);
+        console.log(`### Port is connected:`);
+        console.log(_this.port);
+
         await _this.port.open({
           baudRate: 9600,
           flowControl: "none",
         });
+
+        console.log(`### Port is opened:`);
 
         let settings = {};
 
@@ -144,6 +148,7 @@ class MainApp extends Base {
       // appendToTerminal(value);
 
       // console.log(`### Value from sensor: ${parseInt(value)}`);
+      console.log(`### Value from sensor: ${value}`);
       if (parseInt(value) > 0) {
         readable_value = [...readable_value, parseInt(value)];
       }
