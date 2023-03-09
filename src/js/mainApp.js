@@ -8,7 +8,8 @@ class MainApp extends Base {
     this.historyIndex = -1;
     this.lineHistory = [];
 
-    this.connect_to_serial = true;
+    this.connect_to_serial = false;
+
     this.top_speed = 0;
     this.top_speed_meter;
 

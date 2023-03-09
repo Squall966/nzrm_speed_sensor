@@ -11,6 +11,19 @@ contextBridge.exposeInMainWorld("dialog", {
   },
 });
 
+contextBridge.exposeInMainWorld("nzrm", {
+  topSpeed: (msg) => {
+    if (msg) {
+      ipcRenderer.send("top_speed", msg);
+      // console.log("### Context Bridge NZRM Top Speed ", msg);
+    }
+  },
+
+  listen: (eventName, callback) => {
+    ipcRenderer.on(eventName, callback);
+  },
+});
+
 /**
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.

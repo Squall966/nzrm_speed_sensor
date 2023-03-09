@@ -63,6 +63,8 @@ function createWindow(width = null, height = null) {
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.setAlwaysOnTop(true, "screen-saver");
   }
 
   // mainWindow.webContents.on("did-finish-load", () => {
@@ -149,8 +151,24 @@ app.whenReady().then(() => {
     secondWin = new BrowserWindow({
       x: externalDisplay.bounds.x + 50,
       y: externalDisplay.bounds.y + 50,
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+        contextIsolation: true,
+        nodeIntegration: true,
+        allowRunningInsecureContent: true,
+        webSecurity: false,
+        enableRemoteModule: true,
+        enableBlinkFeatures: "Serial",
+      },
     });
-    secondWin.loadURL("https://github.com");
+
+    if (isDev) {
+      secondWin.webContents.openDevTools();
+    } else {
+      secondWin.setAlwaysOnTop(true, "screen-saver");
+    }
+
+    secondWin.loadURL(`file://${__dirname}/src/index_win2.html`);
   }
 
   createWindow(width, height);
@@ -187,5 +205,12 @@ ipcMain.on("is-dev", (e, msg) => {
 ipcMain.on("appDir", (e, msg) => {
   if (msg) {
     e.returnValue = appDir;
+  }
+});
+
+ipcMain.on("top_speed", (e, msg) => {
+  if (msg) {
+    console.log("### Top speed from renderer: ", msg);
+    secondWin.webContents.send("top_speed", msg);
   }
 });

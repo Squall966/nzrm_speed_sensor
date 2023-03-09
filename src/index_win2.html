@@ -38,34 +38,25 @@
         </a>
       </div>
 
-      <div data-barba="container" data-barba-namespace="home" class="main-container index">
+      <div data-barba="container" data-barba-namespace="home_2" class="main-container index">
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
 
-        <h1>This is the INDEX page</h1>
+        <h1>This is the INDEX 2 page</h1>
         <br />
-        <div id="top-speed-input-wrapper">
-          <input type="number" name="top-speed" id="top-speed-input" />
-          <button id="btn-top-speed-send">Send</button>
-        </div>
+        <h1>TOP SPEED</h1>
+        <div id="top-speed">0 km/h</div>
       </div>
     </div>
     <script src="./js/barba.js"></script>
     <script>
-      $(() => {
-        console.log("### Jqeury is ready ###");
-
-        const button = $("#btn-top-speed-send");
-
-        button.click(() => {
-          const top_speed = $("#top-speed-input").val();
-          let data = 0;
-          if (top_speed || top_speed > 0) {
-            data = top_speed;
-            console.log("### Top speed: ", data);
-          } else {
-            console.warn("### Please input a value!");
+      $(function () {
+        console.log("### Hello from index 2.");
+        const top_speed_display = $("#top-speed");
+        window.nzrm.listen("top_speed", (e, msg) => {
+          if (msg) {
+            console.log("### Top speed get! ", msg);
+            top_speed_display.html(`${msg} km/h`);
           }
-          window.nzrm.topSpeed(data);
         });
       });
     </script>
