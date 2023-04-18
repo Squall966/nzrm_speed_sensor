@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="Squall Lion" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <link rel="stylesheet" href="./css/styles.min.css" />
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/@barba/core/dist/barba.umd.js"></script>
@@ -65,8 +68,17 @@
           } else {
             console.warn("### Please input a value!");
           }
-          window.nzrm.topSpeed(data);
+
+          window.nzrm.send("top_speed", data);
+          window.nzrm.on("reset-top-speed", (e, msg) => {
+            console.log("### Reset top speed");
+            $("#top-speed-input").val(mainApp.top_speed);
+          });
         });
+
+        // setTimeout(() => {
+        //   barba.go("demo.html");
+        // }, 5000);
       });
     </script>
   </body>

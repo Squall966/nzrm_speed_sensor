@@ -292,3 +292,12 @@ body {
 .demo #top-speed-wrapper #top-speed-meter {
   font-size: 3rem;
 }
+
+.progress {
+  height: 300px;
+}
+
+.progress > svg {
+  height: 100%;
+  display: block;
+}

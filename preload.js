@@ -12,6 +12,15 @@ contextBridge.exposeInMainWorld("dialog", {
 });
 
 contextBridge.exposeInMainWorld("nzrm", {
+  on: (eventName, callback) => {
+    ipcRenderer.on(eventName, callback);
+  },
+
+  send: (eventName, argument) => {
+    if (!eventName || !argument) return false;
+    ipcRenderer.send(eventName, argument);
+  },
+
   topSpeed: (msg) => {
     if (msg) {
       ipcRenderer.send("top_speed", msg);

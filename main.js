@@ -14,7 +14,7 @@ app.commandLine.appendSwitch("enable-features", "ElectronSerialChooser");
 if (isDev) {
   try {
     require("electron-reloader")(module, {
-      debug: true,
+      // debug: true,
       watchRenderer: true,
     });
   } catch {}
@@ -35,6 +35,8 @@ let abortDialog = new AbortController();
 //   // if (err) console.log(err);
 //   if (err) logger.mainLog.error(`DB error: ${err}`);
 // });
+let firstWin;
+let windows = [];
 
 function createWindow(width = null, height = null) {
   // Create the browser window.
@@ -57,7 +59,7 @@ function createWindow(width = null, height = null) {
 
   // and load the index.html of the app.
   // mainWindow.loadFile("./src/index.html");
-  mainWindow.loadURL(`file://${__dirname}/src/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/src/demo.html`);
   // mainWindow.loadURL(`file://${__dirname}/src/image-slider.html`);
 
   // Open the DevTools.
@@ -67,19 +69,23 @@ function createWindow(width = null, height = null) {
     mainWindow.setAlwaysOnTop(true, "screen-saver");
   }
 
-  // mainWindow.webContents.on("did-finish-load", () => {
-  //   /**
-  //    * Check the updater while the App is ready & no dev
-  //    */
-  //   if (!isDev) updater(mainWindow, app);
-  // });
+  mainWindow.webContents.on("did-finish-load", () => {
+    /**
+     * Check the updater while the App is ready & no dev
+     */
+    // if (!isDev) updater(mainWindow, app);
+    focusInMiliseconds(windows[1]);
+  });
 
   /**
    * Define Dialog from Render process
    */
   ipcMain.handle("show-dialog", async (e, msg) => {
     if (msg) {
-      const result = await dialog.showMessageBox(mainWindow, { message: msg, title: "NZ Grass-fed Difference" });
+      const result = await dialog.showMessageBox(mainWindow, {
+        message: msg,
+        title: "New Zealand Rugby Museum",
+      });
       return result;
     }
   });
@@ -109,26 +115,36 @@ function createWindow(width = null, height = null) {
     if (msg) abortDialog.abort();
   });
 
-  mainWindow.webContents.session.on("select-serial-port", (event, portList, webContents, callback) => {
-    console.log("SELECT-SERIAL-PORT FIRED WITH", portList);
-    event.preventDefault();
-    let selectedPort = portList.find((device) => {
-      // Automatically pick a specific device instead of prompting user
-      //return device.vendorId == 0x2341 && device.productId == 0x0043;
+  mainWindow.webContents.session.on(
+    "select-serial-port",
+    (event, portList, webContents, callback) => {
+      console.log("SELECT-SERIAL-PORT FIRED WITH", portList);
+      event.preventDefault();
+      let selectedPort = portList.find((device) => {
+        // Automatically pick a specific device instead of prompting user
+        //return device.vendorId == 0x2341 && device.productId == 0x0043;
 
-      // Automatically return the first device
-      return true;
-    });
-    if (!selectedPort) {
-      callback("");
-    } else {
-      callback(selectedPort.portId);
+        // Automatically return the first device
+        return true;
+      });
+      if (!selectedPort) {
+        callback("");
+      } else {
+        callback(selectedPort.portId);
+      }
     }
-  });
+  );
+
+  // console.log(mainWindow);
+  windows = [...windows, mainWindow];
+  firstWin = windows[0]; // set the 1st window
+  // console.log(windows);
 } /** CREATE WINDOW ENDS */
 
 /**
- * Second window
+ * ################################################################################
+ *                               Second window
+ * ################################################################################
  */
 let secondWin;
 // This method will be called when Electron has finished
@@ -144,9 +160,11 @@ app.whenReady().then(() => {
     return display.bounds.x !== 0 || display.bounds.y !== 0;
   });
 
+  /* 
   console.log("#####################################");
   console.log(externalDisplay);
   console.log("#####################################");
+  */
   if (externalDisplay) {
     secondWin = new BrowserWindow({
       x: externalDisplay.bounds.x + 50,
@@ -163,15 +181,24 @@ app.whenReady().then(() => {
     });
 
     if (isDev) {
+      console.log(secondWin);
       secondWin.webContents.openDevTools();
     } else {
       secondWin.setAlwaysOnTop(true, "screen-saver");
     }
 
     secondWin.loadURL(`file://${__dirname}/src/index_win2.html`);
+    windows = [...windows, secondWin];
+
+    // secondWin.webContents.on("did-finish-load", () => {
+    //   firstWin.focus();
+    //   console.log("### Focus on the 1st window ###");
+    // });
   }
 
   createWindow(width, height);
+
+  console.log("LENGTH>>>>", windows.length);
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
@@ -189,6 +216,20 @@ app.on("window-all-closed", function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+/**
+ * Set the focus on main window (first window)
+ */
+// secondWin.on("show", () => {
+//   focusInMiliseconds(firstWin);
+// });
+
+const focusInMiliseconds = (window, ms = 200) => {
+  setTimeout(() => {
+    console.log(window);
+    window.focus();
+  }, ms);
+};
 
 ipcMain.on("app-version", (e, msg) => {
   if (msg) {
@@ -212,5 +253,22 @@ ipcMain.on("top_speed", (e, msg) => {
   if (msg) {
     console.log("### Top speed from renderer: ", msg);
     secondWin.webContents.send("top_speed", msg);
+  }
+});
+
+ipcMain.on("reset-top-speed", (e, msg) => {
+  if (msg) {
+    firstWin.webContents.send("reset-top-speed", "testing");
+    secondWin.webContents.send("reset-top-speed", "testing");
+    console.log("### Top speed reset signal ###");
+  }
+});
+
+ipcMain.on("start-game", (e, msg) => {
+  // let args = ("start-game", 1);
+  if (msg) {
+    // firstWin.webContents.send("start-game", 1);
+    secondWin.webContents.send("start-game", 1);
+    console.log("### Start game signal ###");
   }
 });

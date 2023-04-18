@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="Squall Lion" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <link rel="stylesheet" href="./css/styles.min.css" />
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/@barba/core/dist/barba.umd.js"></script>
@@ -30,12 +33,15 @@
         <a href="demo.html">
           <button>Go Demo</button>
         </a>
+        <a href="#" onclick="mainApp.connectSerial()" id="connect-serial">
+          <button>Open Port</button>
+        </a>
         <a href="#" onclick="mainApp.closeSerialPort()">
           <button>Close Port</button>
         </a>
-        <a href="#" onclick="mainApp.resetTopSpeed()">
+        <!-- <a href="#" onclick="mainApp.resetTopSpeed()">
           <button>Reset Top Speed</button>
-        </a>
+        </a> -->
       </div>
 
       <div data-barba="container" data-barba-namespace="demo" class="main-container demo">
@@ -56,5 +62,14 @@
       </div>
     </div>
     <script src="./js/barba.js"></script>
+    <script>
+      $(() => {
+        console.log("READY >>>>>>>>>>>>");
+        window.nzrm.on("reset-top-speed", (e, msg) => {
+          console.log("### Reset top speed");
+          $("#top-speed-meter").html(mainApp.top_speed + " km/h");
+        });
+      });
+    </script>
   </body>
 </html>

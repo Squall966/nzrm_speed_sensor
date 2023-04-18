@@ -16,10 +16,17 @@ class MainApp extends Base {
     this.reader;
     this.readableStreamClosed;
 
+    this.topSpeedSignalToggle = false;
+
+    this.resetSpeedTimer = null;
+    this.resetSpeedTimeout = 10;
+
     // For DEMO ONLY
     this.mph;
     this.kmh;
     this.clear_display_timeout = 3000;
+
+    this.disableSerialForDev = false;
   }
   init() {
     console.log("### Main app class init ###");
@@ -31,14 +38,30 @@ class MainApp extends Base {
     /** Reset and initialise */
     this.resetTopSpeed();
 
-    if (this.connect_to_serial) this.connectSerial();
+    console.log("### Is the kiosk connected to serial? ", this.connect_to_serial);
+
+    this.startSendingSignal();
   }
 
   resetTopSpeed() {
     // reset top speed
     this.top_speed = 0;
-    if (this.top_speed_meter) this.top_speed_meter.innerHTML = this.top_speed + " km/h";
+
+    /** 
+     * ### Commmented for DEV
+    if (!this.top_speed_meter) return false; 
+    this.top_speed_meter.innerHTML = this.top_speed + " km/h";
+    */
+
+    window.nzrm.send("reset-top-speed", 1);
     console.log(`### TOP SPEED is reset: ${this.top_speed}`);
+
+    this.topSpeedSignalToggle = false;
+    console.warn("### Speed signal sending ended ###");
+
+    if (this.resetSpeedTimer) {
+      this.clearSpeedTimer();
+    }
   }
 
   async dialogMessage(msg) {
@@ -96,6 +119,7 @@ class MainApp extends Base {
       // var ports = await navigator.serial.getPorts();
       // console.log(ports);
       // _this.port = ports[0];
+
       if (_this.port) {
         console.log(`### Port is connected:`);
         console.log(_this.port);
@@ -149,7 +173,7 @@ class MainApp extends Base {
       // appendToTerminal(value);
 
       // console.log(`### Value from sensor: ${parseInt(value)}`);
-      console.log(`### Value from sensor: ${value}`);
+      // console.log(`### Value from sensor: ${value}`);
       if (parseInt(value) > 0) {
         readable_value = [...readable_value, parseInt(value)];
       }
@@ -158,7 +182,7 @@ class MainApp extends Base {
          * The end of the data is a "y", so we know we have got a full data now
          * we should update the display and reset the array
          */
-        console.log(readable_value);
+        // console.log(readable_value);
         const final_value = readable_value.join("");
         _this.displaySpeed(final_value);
         readable_value = [];
@@ -170,7 +194,7 @@ class MainApp extends Base {
     const _this = this;
 
     if (value == " " || !value) {
-      console.log("### No value!");
+      // console.log("### No value!");
       return false;
     }
 
@@ -188,6 +212,15 @@ class MainApp extends Base {
             _this.top_speed_meter.innerHTML = _this.top_speed + " km/h";
           }
 
+          /**
+           * I should be checking the toggle and sending the data here
+           */
+          console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
+          if (_this.topSpeedSignalToggle) {
+            window.nzrm.send("top_speed", _this.top_speed);
+            console.log("### Top Speed Sent! ###");
+          }
+
           console.log(`### TOP SPEED: ${_this.top_speed}`);
         }
 
@@ -197,5 +230,66 @@ class MainApp extends Base {
         }, _this.clear_display_timeout);
       }
     }
+  }
+
+  ipcListener(eventName, callback) {
+    // window.nzrm.on(eventName, (e, a) => {
+    //   callback(e, a);
+    // });
+    window.nzrm.on(eventName, callback);
+  }
+
+  startSendingSignal() {
+    const _this = this;
+
+    $("html").on("keydown", (e) => {
+      if (e.key == "s" || e.key == "S") {
+        e.preventDefault();
+        _this.topSpeedSignalToggle = true;
+        _this.startResetSpeedTimer();
+        console.log("### Start sending the top speed signal ###");
+
+        /**
+         * Send the Start Game signal
+         */
+        window.nzrm.send("start-game", 1);
+
+        if (this.disableSerialForDev) {
+          console.warn("### Serial port disable for dev ###");
+        } else {
+          /**
+           * Request port requires a user gesture
+           */
+          if (!this.connect_to_serial) this.connectSerial();
+        }
+      }
+    });
+  }
+
+  startResetSpeedTimer() {
+    const _this = this;
+
+    if (!_this.resetSpeedTimer) {
+      _this.resetSpeedTimer = setTimeout(() => {
+        _this.resetTopSpeed();
+        console.log("### Reset speed timer opened. ###");
+      }, _this.resetSpeedTimeout * 1000);
+    }
+  }
+
+  clearSpeedTimer() {
+    clearTimeout(this.resetSpeedTimer);
+    this.resetSpeedTimer = null;
+    console.log("### Reset speed timer closed. ###");
+  }
+
+  startTimerCircleAnimation() {
+    var circle = new ProgressBar.Circle("#progress", {
+      color: "#FCB03C",
+      duration: 3000,
+      // easing: "easeInOut",
+    });
+
+    circle.animate(1);
   }
 }

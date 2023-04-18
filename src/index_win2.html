@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="Squall Lion" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <link rel="stylesheet" href="./css/styles.min.css" />
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/@barba/core/dist/barba.umd.js"></script>
@@ -24,7 +27,7 @@
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
 
       <div class="_tmp-nav">
-        <a href="index.html">
+        <a href="index_win2.html">
           <button id="goHome">Go Home</button>
         </a>
         <a href="demo.html">
@@ -45,6 +48,8 @@
         <br />
         <h1>TOP SPEED</h1>
         <div id="top-speed">0 km/h</div>
+        <br />
+        <div class="progress" id="progress"></div>
       </div>
     </div>
     <script src="./js/barba.js"></script>
@@ -52,10 +57,34 @@
       $(function () {
         console.log("### Hello from index 2.");
         const top_speed_display = $("#top-speed");
+
+        /**
         window.nzrm.listen("top_speed", (e, msg) => {
           if (msg) {
             console.log("### Top speed get! ", msg);
             top_speed_display.html(`${msg} km/h`);
+          }
+        });
+        */
+
+        mainApp.ipcListener("top_speed", (e, msg) => {
+          if (msg) {
+            console.log("### Top speed get! ", msg);
+            top_speed_display.html(`${msg} km/h`);
+          }
+        });
+
+        mainApp.ipcListener("start-game", (e, msg) => {
+          if (msg) {
+            console.log("### Game starts ###");
+            mainApp.startTimerCircleAnimation();
+          }
+        });
+
+        mainApp.ipcListener("reset-top-speed", (e, msg) => {
+          if (msg) {
+            console.log("### Reset top speed");
+            top_speed_display.html(`${mainApp.top_speed} km/h`);
           }
         });
       });
