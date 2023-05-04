@@ -54,6 +54,7 @@ barba.init({
       namespace: "tv-get-ready",
       beforeEnter(data) {
         console.log("### TV GET READY page should init here");
+        tv.startTimerCircleAnimation();
       },
     },
     {
