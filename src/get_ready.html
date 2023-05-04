@@ -15,10 +15,12 @@
     <script src="../node_modules/progressbar.js/dist/progressbar.min.js"></script>
     <script src="./js/base.js"></script>
     <script src="./js/mainApp.js"></script>
-    <title>Electron Boilerplate 2023</title>
+    <script src="./js/surface.js"></script>
+    <script src="./js/tv.js"></script>
+    <title>Electron Boilerplate 2023: MAIN - TV - Get Ready</title>
     <script>
       const base = new Base();
-      const mainApp = new MainApp();
+      const tv = new Tv();
     </script>
   </head>
   <body class="noSelect">
@@ -27,7 +29,7 @@
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
 
       <div class="_tmp-nav">
-        <a href="index.html">
+        <a href="#" onclick="window.nzrm.send(`go-home`, true)">
           <button id="goHome">Go Home</button>
         </a>
         <a href="demo.html">
@@ -40,46 +42,16 @@
           <button>Reset Top Speed</button>
         </a>
       </div>
-
-      <div data-barba="container" data-barba-namespace="home" class="main-container index">
+      <div
+        data-barba="container"
+        data-barba-namespace="tv-get-ready"
+        class="main-container get-ready tv"
+      >
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
 
-        <h1>This is the INDEX page</h1>
-        <br />
-        <div id="top-speed-input-wrapper">
-          <input type="number" name="top-speed" id="top-speed-input" />
-          <button id="btn-top-speed-send">Send</button>
-        </div>
+        <h1>This is the GET READY</h1>
       </div>
     </div>
     <script src="./js/barba.js"></script>
-    <script>
-      $(() => {
-        console.log("### Jqeury is ready ###");
-
-        const button = $("#btn-top-speed-send");
-
-        button.click(() => {
-          const top_speed = $("#top-speed-input").val();
-          let data = 0;
-          if (top_speed || top_speed > 0) {
-            data = top_speed;
-            console.log("### Top speed: ", data);
-          } else {
-            console.warn("### Please input a value!");
-          }
-
-          window.nzrm.send("top_speed", data);
-          window.nzrm.on("reset-top-speed", (e, msg) => {
-            console.log("### Reset top speed");
-            $("#top-speed-input").val(mainApp.top_speed);
-          });
-        });
-
-        // setTimeout(() => {
-        //   barba.go("demo.html");
-        // }, 5000);
-      });
-    </script>
   </body>
 </html>

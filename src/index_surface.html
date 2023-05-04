@@ -15,10 +15,13 @@
     <script src="../node_modules/progressbar.js/dist/progressbar.min.js"></script>
     <script src="./js/base.js"></script>
     <script src="./js/mainApp.js"></script>
-    <title>Electron Boilerplate 2023</title>
+    <script src="./js/surface.js"></script>
+    <script src="./js/tv.js"></script>
+    <title>Electron Boilerplate 2023: MAIN - Surface</title>
     <script>
       const base = new Base();
       const mainApp = new MainApp();
+      const surface = new Surface();
     </script>
   </head>
   <body class="noSelect">
@@ -27,9 +30,9 @@
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
 
       <div class="_tmp-nav">
-        <a href="index_win2.html">
-          <button id="goHome">Go Home</button>
-        </a>
+        <!-- <a href="#" onclick="window.nzrm.send(`go-home`, true)"> -->
+
+        <button id="goHome" onclick="window.nzrm.send(`go-home`, true)">Go Home</button>
         <a href="demo.html">
           <button>Go Demo</button>
         </a>
@@ -41,10 +44,14 @@
         </a>
       </div>
 
-      <div data-barba="container" data-barba-namespace="home_2" class="main-container index">
+      <div
+        data-barba="container"
+        data-barba-namespace="surface-home"
+        class="main-container index surface"
+      >
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
 
-        <h1>This is the INDEX 2 page</h1>
+        <h1>This is the INDEX at Surface</h1>
         <br />
         <h1>TOP SPEED</h1>
         <div id="top-speed">0 km/h</div>
@@ -55,17 +62,31 @@
     <script src="./js/barba.js"></script>
     <script>
       $(function () {
-        console.log("### Hello from index 2.");
+        console.log("### Hello from Surface Home (Main Window)");
         const top_speed_display = $("#top-speed");
 
-        /**
+        console.log("### Surface Home Page should init here");
+        mainApp.init();
+        startGameListener("speed_surface");
+
+        mainApp.ipcListener("go-home", (e, msg) => {
+          if (msg) {
+            surface.goHome();
+          }
+        });
+
+        // $("#goHome").on("click", () => {
+        //   // barba.go("index_surface.html");
+        //   barba.go("speed_tv.html");
+        // });
+
+        /*
         window.nzrm.listen("top_speed", (e, msg) => {
           if (msg) {
             console.log("### Top speed get! ", msg);
             top_speed_display.html(`${msg} km/h`);
           }
         });
-        */
 
         mainApp.ipcListener("top_speed", (e, msg) => {
           if (msg) {
@@ -87,6 +108,7 @@
             top_speed_display.html(`${mainApp.top_speed} km/h`);
           }
         });
+        */
       });
     </script>
   </body>

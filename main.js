@@ -1,5 +1,12 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, powerSaveBlocker, ipcMain, dialog } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  powerSaveBlocker,
+  ipcMain,
+  dialog,
+  globalShortcut,
+} = require("electron");
 const path = require("path");
 const { appDir } = require("./helpers/generalVariables");
 const isDev = require("electron-is-dev");
@@ -58,8 +65,8 @@ function createWindow(width = null, height = null) {
   });
 
   // and load the index.html of the app.
-  // mainWindow.loadFile("./src/index.html");
-  mainWindow.loadURL(`file://${__dirname}/src/demo.html`);
+  mainWindow.loadFile("./src/index_surface.html");
+  // mainWindow.loadURL(`file://${__dirname}/src/demo.html`);
   // mainWindow.loadURL(`file://${__dirname}/src/image-slider.html`);
 
   // Open the DevTools.
@@ -181,13 +188,13 @@ app.whenReady().then(() => {
     });
 
     if (isDev) {
-      console.log(secondWin);
+      // console.log(secondWin);
       secondWin.webContents.openDevTools();
     } else {
       secondWin.setAlwaysOnTop(true, "screen-saver");
     }
 
-    secondWin.loadURL(`file://${__dirname}/src/index_win2.html`);
+    secondWin.loadURL(`file://${__dirname}/src/index_tv.html`);
     windows = [...windows, secondWin];
 
     // secondWin.webContents.on("did-finish-load", () => {
@@ -205,6 +212,14 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow(width, height);
   });
+
+  /**
+   * Register shortcut
+   */
+  // globalShortcut.register("S", () => {
+  //   console.log("#### Send start game signal ###");
+  //   sendSignalFunction()
+  // });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -226,7 +241,7 @@ app.on("window-all-closed", function () {
 
 const focusInMiliseconds = (window, ms = 200) => {
   setTimeout(() => {
-    console.log(window);
+    // console.log(window);
     window.focus();
   }, ms);
 };
@@ -268,7 +283,17 @@ ipcMain.on("start-game", (e, msg) => {
   // let args = ("start-game", 1);
   if (msg) {
     // firstWin.webContents.send("start-game", 1);
-    secondWin.webContents.send("start-game", 1);
+    // secondWin.webContents.send("start-game", 1);
+    windows[0].webContents.send("start-game", 1);
+    windows[1].webContents.send("start-game", 1);
     console.log("### Start game signal ###");
+  }
+});
+
+ipcMain.on("go-home", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("go-home", 1);
+    windows[1].webContents.send("go-home", 1);
+    console.log("### Go home signal ###");
   }
 });

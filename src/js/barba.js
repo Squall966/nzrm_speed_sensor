@@ -1,11 +1,24 @@
-/*! NZ Grass-fed Difference by Squall Lion@2022 |  This Class uses JQuery */
+const startGameListener = (page_to_go = null) => {
+  console.log("### Start game listener");
+  mainApp.ipcListener("start-game", (e, msg) => {
+    if (msg) {
+      console.log("### Game starts ###");
+      console.log("### Page to go? ", page_to_go);
+      if (page_to_go) {
+        barba.go(`${page_to_go}.html`);
+      }
+    }
+  });
+};
+
 barba.init({
   transitions: [
     {
       name: "opacity-transition",
       // sync: true,
       async leave(data) {
-        console.log("### Next container: " + data.current.namespace);
+        // console.log("### Next container: " + data.current.namespace);
+        // console.log(data);
         base.lockHtml();
         return gsap.to(data.current.container, {
           opacity: 0,
@@ -24,9 +37,29 @@ barba.init({
   ],
   views: [
     {
-      namespace: "home",
+      namespace: "surface-home",
+      beforeEnter(data) {},
+    },
+    {
+      namespace: "surface-speed",
       beforeEnter(data) {
-        console.log("### Home Page should init here");
+        console.log("### Surface SPEED Page should init here");
+      },
+    },
+    {
+      namespace: "tv-home",
+      beforeEnter(data) {},
+    },
+    {
+      namespace: "tv-get-ready",
+      beforeEnter(data) {
+        console.log("### TV GET READY page should init here");
+      },
+    },
+    {
+      namespace: "tv-speed",
+      beforeEnter(data) {
+        console.log("### TV SPEED Page should init here");
       },
     },
     {

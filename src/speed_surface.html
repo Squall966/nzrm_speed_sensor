@@ -15,11 +15,9 @@
     <script src="../node_modules/progressbar.js/dist/progressbar.min.js"></script>
     <script src="./js/base.js"></script>
     <script src="./js/mainApp.js"></script>
-    <title>Electron Boilerplate 2023: DEMO</title>
-    <script>
-      const base = new Base();
-      const mainApp = new MainApp();
-    </script>
+    <script src="./js/surface.js"></script>
+    <script src="./js/tv.js"></script>
+    <title>Speed: Surface</title>
   </head>
   <body class="noSelect">
     <!-- define the wrapper and the container -->
@@ -27,49 +25,29 @@
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
 
       <div class="_tmp-nav">
-        <a href="index.html">
+        <a href="#" onclick="window.nzrm.send(`go-home`, true)">
           <button id="goHome">Go Home</button>
         </a>
         <a href="demo.html">
           <button>Go Demo</button>
         </a>
-        <a href="#" onclick="mainApp.connectSerial()" id="connect-serial">
-          <button>Open Port</button>
-        </a>
         <a href="#" onclick="mainApp.closeSerialPort()">
           <button>Close Port</button>
         </a>
-        <!-- <a href="#" onclick="mainApp.resetTopSpeed()">
+        <a href="#" onclick="mainApp.resetTopSpeed()">
           <button>Reset Top Speed</button>
-        </a> -->
+        </a>
       </div>
-
-      <div data-barba="container" data-barba-namespace="demo" class="main-container demo">
+      <div
+        data-barba="container"
+        data-barba-namespace="surface-speed"
+        class="main-container speed surface"
+      >
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
-        <!-- <button onclick="mainApp.connectSerial()" id="connect">Connect</button> -->
-        <div id="top-speed-wrapper">
-          <div id="top-speed-title">Top Speed</div>
-          <div id="top-speed-meter">0 km/h</div>
-        </div>
-        <div id="demo-wrapper">
-          <div id="mph" class="text-a">0 mph</div>
-          <br />
-          <br />
-          <hr />
-          <br />
-          <div id="kmh" class="text-a">0 km/h</div>
-        </div>
+
+        <h1>This is the Speed Surface</h1>
       </div>
     </div>
     <script src="./js/barba.js"></script>
-    <script>
-      $(() => {
-        console.log("READY >>>>>>>>>>>>");
-        window.nzrm.on("reset-top-speed", (e, msg) => {
-          console.log("### Reset top speed");
-          $("#top-speed-meter").html(mainApp.top_speed + " km/h");
-        });
-      });
-    </script>
   </body>
 </html>

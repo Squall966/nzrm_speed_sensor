@@ -26,7 +26,7 @@ class MainApp extends Base {
     this.kmh;
     this.clear_display_timeout = 3000;
 
-    this.disableSerialForDev = false;
+    this.disableSerialForDev = true;
   }
   init() {
     console.log("### Main app class init ###");

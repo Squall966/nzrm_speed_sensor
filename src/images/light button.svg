@@ -1,0 +1,25 @@
+<svg id="light_button" data-name="light button" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59.057" height="26.643" viewBox="0 0 59.057 26.643">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#ed9696"/>
+      <stop offset="1" stop-color="#f50000"/>
+    </linearGradient>
+    <clipPath id="clip-path">
+      <path id="Path_15" data-name="Path 15" d="M35.011,0A37.565,37.565,0,0,0,10,9.911H60.023A37.566,37.566,0,0,0,35.011,0Z" transform="translate(-10 0.001)" fill="url(#linear-gradient)"/>
+    </clipPath>
+    <clipPath id="clip-path-2">
+      <rect id="Rectangle_13" data-name="Rectangle 13" width="59.057" height="25.099" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Group_7" data-name="Group 7" transform="translate(4.517)">
+    <g id="Group_6" data-name="Group 6" clip-path="url(#clip-path)">
+      <rect id="Rectangle_11" data-name="Rectangle 11" width="50.023" height="9.912" transform="translate(0 0)" fill="url(#linear-gradient)"/>
+    </g>
+  </g>
+  <g id="Group_9" data-name="Group 9" transform="translate(0 1.544)">
+    <g id="Group_8" data-name="Group 8" transform="translate(0 0)" clip-path="url(#clip-path-2)">
+      <path id="Path_16" data-name="Path 16" d="M54.481,18.646H4.576L0,24.7V35.69H59.057V24.7Z" transform="translate(0 -10.591)" fill="#303030"/>
+      <rect id="Rectangle_12" data-name="Rectangle 12" width="59.057" height="10.988" transform="translate(0 14.111)"/>
+    </g>
+  </g>
+</svg>
