@@ -312,4 +312,14 @@ class MainApp extends Base {
 
     circle.animate(1);
   }
+
+  lockHtml() {
+    $("html").removeClass("interaction-on");
+    $("html").addClass("interaction-off");
+  }
+
+  releaseHtml() {
+    $("html").removeClass("interaction-off");
+    $("html").addClass("interaction-on");
+  }
 }

@@ -81,7 +81,11 @@ class Tv {
     const _this = this;
 
     let facts = mainApp.funFacts;
-    let index = Math.round(Math.random() * facts.length);
+    let index = Math.round(Math.random() * facts.length) - 1;
+
+    if (index < 0) index = 0;
+    if (index > facts.length - 1) index = facts.length - 1;
+
     _this.funFact = facts[index];
     $(".content").html(_this.funFact);
   }
