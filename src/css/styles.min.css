@@ -258,7 +258,6 @@ body {
 }
 
 .index {
-  background: lightgray;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -482,4 +481,141 @@ h2 {
   font-weight: lighter;
   font-size: 28px;
   color: #865c27;
+}
+
+.main-wrapper.surface {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-container.index.surface {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+.main-container.index.surface .logo {
+  width: 976px;
+  height: 463px;
+  background-size: contain;
+}
+.main-container.index.surface h1 {
+  margin-top: -10px;
+  margin-bottom: 0.2em;
+}
+.main-container.index.surface ._margin {
+  height: 20vh;
+}
+
+.fun-facts-container {
+  position: absolute;
+  background-color: rgba(64, 61, 61, 0.7);
+  width: 90vw;
+  height: 85vh;
+  z-index: 2;
+  top: 80vh;
+  border-radius: 5em;
+  backdrop-filter: blur(10px);
+  flex-direction: column;
+}
+.fun-facts-container .prompt-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.fun-facts-container .prompt-container .title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 50px;
+  color: #865c27;
+  margin-bottom: 15px;
+  margin-top: 1em;
+}
+.fun-facts-container .prompt-container .title-container .light {
+  font-family: "Roboto";
+  font-weight: lighter;
+  font-size: 32px;
+  color: #d2b48c;
+  margin-left: 15px;
+}
+.fun-facts-container .prompt-container .title-container .light span {
+  font-weight: bold;
+}
+.fun-facts-container .logo.surface {
+  display: none;
+  opacity: 0;
+}
+.fun-facts-container .close {
+  width: 40px;
+  height: 40px;
+  margin: auto;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  bottom: -38px;
+}
+
+.logo-s {
+  width: 281px;
+  height: 133px;
+  background-size: contain;
+  right: -25px;
+  top: 0px;
+  position: absolute;
+}
+
+.logo.surface-top-right {
+  position: fixed;
+  right: 43px !important;
+  top: 68px;
+}
+
+.main-container.speed.surface {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.main-container.speed.surface .top-speed-title {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 50px;
+  color: #d2b48c;
+  text-transform: uppercase;
+}
+.main-container.speed.surface .top-speed-title span {
+  font-weight: lighter;
+}
+.main-container.speed.surface .vertical-line {
+  width: 1px;
+  height: 98.5px;
+  background-color: #d2b48c;
+  margin: 1.3em 0;
+}
+.main-container.speed.surface .top-speed {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 400px;
+  color: #e7f2f2;
+  line-height: 0.8em;
+}
+.main-container.speed.surface .kmh {
+  font-family: "Roboto";
+  font-weight: lighter;
+  font-size: 50px;
+  font-style: italic;
+  color: #d2b48c;
+  margin-top: 0.5em;
+}
+.main-container.speed.surface .dummy-spacer {
+  margin: 4.5em;
 }

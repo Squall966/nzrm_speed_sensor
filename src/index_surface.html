@@ -26,10 +26,9 @@
   </head>
   <body class="noSelect">
     <!-- define the wrapper and the container -->
-    <div data-barba="wrapper" class="main-wrapper">
+    <div data-barba="wrapper" class="main-wrapper surface">
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
       <div id="_surface-pro-res-ref"></div>
-
       <div class="_tmp-nav">
         <!-- <a href="#" onclick="window.nzrm.send(`go-home`, true)"> -->
 
@@ -45,6 +44,23 @@
         </a>
       </div>
 
+      <div class="fun-facts-container">
+        <div class="logo surface logo-s"></div>
+        <div class="prompt-container">
+          <!-- <p>Did you know? <span>More fun facts here!</span></p> -->
+          <div class="title-container">
+            Did you know?
+            <div class="light">More <span>fun facts</span> here!</div>
+          </div>
+          <img src="./images/down-arrow.svg" class="indication pulsing" />
+        </div>
+        <img
+          src="./images/close-icon.svg"
+          class="close"
+          onclick="surface.closeFunFactsContainer();"
+        />
+      </div>
+
       <div
         data-barba="container"
         data-barba-namespace="surface-home"
@@ -52,12 +68,18 @@
       >
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
 
-        <h1>This is the INDEX at Surface</h1>
+        <div class="logo"></div>
+        <h1>How fast can you go?</h1>
+        <h2>Play this game from the other end!</h2>
+        <div class="_margin"></div>
+
+        <!-- The code beleow is for DEMO -->
+        <!-- <h1>This is the INDEX at Surface</h1>
         <br />
         <h1>TOP SPEED</h1>
         <div id="top-speed">0 km/h</div>
         <br />
-        <div class="progress" id="progress"></div>
+        <div class="progress" id="progress"></div> -->
       </div>
     </div>
     <script src="./js/barba.js"></script>
@@ -74,6 +96,8 @@
             surface.goHome();
           }
         });
+
+        surface.init();
 
         // $("#goHome").on("click", () => {
         //   // barba.go("index_surface.html");

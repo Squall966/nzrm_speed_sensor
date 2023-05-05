@@ -97,7 +97,9 @@ class Tv {
     _this.speedPageTimer = setTimeout(() => {
       clearTimeout(_this.speedPageTimer);
       _this.speedPageTimer = null;
-      window.nzrm.send("go-home", true);
+
+      console.warn("!!! GO HOME turned off for DEV !!!");
+      // window.nzrm.send("go-home", true);
     }, _this.speedPageDelay * 1000);
   }
 }

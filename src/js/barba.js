@@ -46,6 +46,7 @@ barba.init({
       namespace: "surface-speed",
       beforeEnter(data) {
         console.log("### Surface SPEED Page should init here");
+        surface.topSpeedPageInit();
       },
     },
     {

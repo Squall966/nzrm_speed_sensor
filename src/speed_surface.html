@@ -26,7 +26,7 @@
   </head>
   <body class="noSelect">
     <!-- define the wrapper and the container -->
-    <div data-barba="wrapper" class="main-wrapper">
+    <div data-barba="wrapper" class="main-wrapper surface">
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
 
       <div class="_tmp-nav">
@@ -43,6 +43,24 @@
           <button>Reset Top Speed</button>
         </a>
       </div>
+
+      <div class="fun-facts-container">
+        <div class="logo surface logo-s"></div>
+        <div class="prompt-container">
+          <!-- <p>Did you know? <span>More fun facts here!</span></p> -->
+          <div class="title-container">
+            Did you know?
+            <div class="light">More <span>fun facts</span> here!</div>
+          </div>
+          <img src="./images/down-arrow.svg" class="indication pulsing" />
+        </div>
+        <img
+          src="./images/close-icon.svg"
+          class="close"
+          onclick="surface.closeFunFactsContainer();"
+        />
+      </div>
+
       <div
         data-barba="container"
         data-barba-namespace="surface-speed"
@@ -50,7 +68,12 @@
       >
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
 
-        <h1>This is the Speed Surface</h1>
+        <div class="logo logo-s surface-top-right"></div>
+        <div class="top-speed-title"><span>your</span> top speed</div>
+        <div class="vertical-line"></div>
+        <div class="top-speed"></div>
+        <div class="kmh">km/h</div>
+        <div class="dummy-spacer"></div>
       </div>
     </div>
     <script src="./js/barba.js"></script>
@@ -65,6 +88,8 @@
             surface.goHome();
           }
         });
+
+        surface.init();
       });
     </script>
   </body>
