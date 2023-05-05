@@ -145,7 +145,7 @@ html {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: white;
+  background: black;
   overflow: hidden;
 }
 
@@ -204,8 +204,9 @@ body {
 
 #_surface-pro-res-ref {
   position: fixed;
-  width: 1440px;
-  height: 960px;
+  outline: 1px rgb(57, 255, 242) solid;
+  width: 1369px;
+  height: 912px;
   z-index: 99999999;
   pointer-events: none;
   top: 50%;
@@ -268,10 +269,6 @@ body {
   background: yellow;
 }
 
-.title {
-  background: lime;
-}
-
 .demo {
   display: flex;
   background-color: rgb(245, 248, 249);
@@ -315,10 +312,174 @@ body {
 }
 
 .progress {
-  height: 300px;
+  height: 642px;
 }
 
 .progress > svg {
   height: 100%;
   display: block;
+}
+
+.progress-bar-timer-digit {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 335px;
+  color: #865c27 !important;
+}
+
+h1 {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 95px;
+  color: #e7f2f2;
+}
+
+h2 {
+  font-family: "Roboto";
+  font-weight: normal;
+  font-size: 45px;
+  color: #d2b48c;
+}
+
+.logo {
+  background: url(../images/logo.svg) no-repeat;
+}
+
+.red-button-icon {
+  background: url(../images/light\ button.svg);
+  width: 59px;
+  height: 27px;
+}
+
+.main-container.tv {
+  width: 100vw;
+  height: 100vh;
+  background: url(../images/bg-tv.jpg) no-repeat;
+  overflow: hidden;
+  display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.main-container.tv .logo {
+  width: 1212px;
+  height: 574px;
+}
+.main-container.tv .title {
+  margin: -2.5rem 0 1.5rem 0;
+}
+.main-container.tv .vertical-line {
+  width: 1px;
+  height: 175px;
+  background-color: #d2b48c;
+  margin: 35px 0;
+}
+.main-container.tv .prompt {
+  display: flex;
+  color: #d2b48c;
+  font-family: "Roboto";
+  font-weight: lighter;
+  font-size: 28px;
+}
+.main-container.tv .prompt span {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 28px;
+  color: #a81818;
+}
+.main-container.tv .prompt .red-button-icon {
+  position: relative;
+  margin: 0 20px;
+  top: 2px;
+}
+
+.logo.top-right {
+  position: absolute;
+  width: 415px !important;
+  height: 197px !important;
+  top: 74px;
+  background-size: contain;
+  left: 1436px;
+}
+
+.main-container.get-ready.tv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.main-container.get-ready.tv #progress {
+  opacity: 0;
+  display: none;
+}
+.main-container.get-ready.tv .get-ready-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+  display: none;
+}
+.main-container.get-ready.tv .get-ready-text h1 {
+  font-size: 135px;
+  margin-bottom: 13px;
+}
+
+.main-container.speed.tv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+}
+.main-container.speed.tv h1 {
+  font-size: 60px;
+  text-transform: uppercase;
+  color: #d2b48c;
+}
+.main-container.speed.tv h1 span {
+  font-family: "Roboto";
+  font-weight: lighter;
+  font-size: 60px;
+}
+.main-container.speed.tv .vertical-line {
+  height: 98.5px;
+}
+.main-container.speed.tv .top-speed {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 400px;
+  color: #e7f2f2;
+}
+.main-container.speed.tv .kmh {
+  font-family: "Roboto";
+  font-weight: normal;
+  font-size: 60px;
+  color: #d2b48c;
+  font-style: italic;
+}
+.main-container.speed.tv .horizontal-line {
+  height: 1px;
+  width: 240px;
+  background-color: #d2b48c;
+  margin: 4em 0;
+}
+.main-container.speed.tv .did-you-know .title {
+  text-transform: uppercase;
+  color: #d2b48c;
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 28px;
+  margin: 0;
+  margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.main-container.speed.tv .did-you-know .content {
+  font-family: "Roboto";
+  font-weight: lighter;
+  font-size: 28px;
+  color: #865c27;
 }

@@ -28,6 +28,7 @@
     <!-- define the wrapper and the container -->
     <div data-barba="wrapper" class="main-wrapper">
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
+      <div id="_surface-pro-res-ref"></div>
 
       <div class="_tmp-nav">
         <!-- <a href="#" onclick="window.nzrm.send(`go-home`, true)"> -->
@@ -68,7 +69,6 @@
         console.log("### Surface Home Page should init here");
         mainApp.init();
         startGameListener("speed_surface");
-
         mainApp.ipcListener("go-home", (e, msg) => {
           if (msg) {
             surface.goHome();

@@ -8,6 +8,8 @@ class MainApp extends Base {
     this.historyIndex = -1;
     this.lineHistory = [];
 
+    this.html;
+
     this.connect_to_serial = false;
 
     this.top_speed = 0;
@@ -20,6 +22,15 @@ class MainApp extends Base {
 
     this.resetSpeedTimer = null;
     this.resetSpeedTimeout = 10;
+
+    this.funFacts = [
+      "Usain Bolt's top speed was 44km/h",
+      "A cheetah can run up to 120km/h",
+      "And a cheetah takes 3 seconds to reach 96km/h",
+      "A Tesla Model 3 takes 3.3 seconds to reach 100km/h",
+      "Family pets like a Labrador can run up to 56km/h",
+      "Over long distances humans can outrun all other animals",
+    ];
 
     // For DEMO ONLY
     this.mph;
@@ -40,7 +51,7 @@ class MainApp extends Base {
 
     console.log("### Is the kiosk connected to serial? ", this.connect_to_serial);
 
-    this.startSendingSignal();
+    // this.startSendingSignal();
   }
 
   resetTopSpeed() {
@@ -239,31 +250,40 @@ class MainApp extends Base {
     window.nzrm.on(eventName, callback);
   }
 
-  startSendingSignal() {
+  keyBinding() {
+    const _this = this;
+    $("html").on("keydown", (e) => _this.startSendingSignal(e, $("html")));
+    // $("html").off("keydown");
+    console.log("### Button activated ###");
+  }
+
+  startSendingSignal(e, ele) {
     const _this = this;
 
-    $("html").on("keydown", (e) => {
-      if (e.key == "s" || e.key == "S") {
-        e.preventDefault();
-        _this.topSpeedSignalToggle = true;
-        _this.startResetSpeedTimer();
-        console.log("### Start sending the top speed signal ###");
+    // $("html").on("keydown", (e) => {
+    if (e.key == "s" || e.key == "S") {
+      e.preventDefault();
+      _this.topSpeedSignalToggle = true;
+      _this.startResetSpeedTimer();
+      console.log("### Start sending the top speed signal ###");
 
+      /**
+       * Send the Start Game signal
+       */
+      window.nzrm.send("start-game", 1);
+
+      if (this.disableSerialForDev) {
+        console.warn("### Serial port disable for dev ###");
+      } else {
         /**
-         * Send the Start Game signal
+         * Request port requires a user gesture
          */
-        window.nzrm.send("start-game", 1);
-
-        if (this.disableSerialForDev) {
-          console.warn("### Serial port disable for dev ###");
-        } else {
-          /**
-           * Request port requires a user gesture
-           */
-          if (!this.connect_to_serial) this.connectSerial();
-        }
+        if (!this.connect_to_serial) this.connectSerial();
       }
-    });
+      ele.off("keydown");
+      console.log("### Button deactivated ###");
+    }
+    // });
   }
 
   startResetSpeedTimer() {

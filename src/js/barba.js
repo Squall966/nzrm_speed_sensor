@@ -38,7 +38,9 @@ barba.init({
   views: [
     {
       namespace: "surface-home",
-      beforeEnter(data) {},
+      beforeEnter(data) {
+        mainApp.keyBinding();
+      },
     },
     {
       namespace: "surface-speed",
@@ -54,13 +56,17 @@ barba.init({
       namespace: "tv-get-ready",
       beforeEnter(data) {
         console.log("### TV GET READY page should init here");
-        tv.startTimerCircleAnimation();
+        tv.init();
+        // tv.startTimerCircleAnimation();
       },
     },
     {
       namespace: "tv-speed",
       beforeEnter(data) {
         console.log("### TV SPEED Page should init here");
+        tv.randomFunFact();
+        tv.displayTopSpeed();
+        tv.speedPageTimeOut();
       },
     },
     {

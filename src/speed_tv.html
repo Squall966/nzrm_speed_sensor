@@ -18,6 +18,11 @@
     <script src="./js/surface.js"></script>
     <script src="./js/tv.js"></script>
     <title>Speed: TV</title>
+    <script>
+      const base = new Base();
+      const mainApp = new MainApp();
+      const tv = new Tv();
+    </script>
   </head>
   <body class="noSelect">
     <!-- define the wrapper and the container -->
@@ -25,9 +30,9 @@
       <!-- put here content that will not change between your pages, like <header> or <nav> -->
 
       <div class="_tmp-nav">
-        <a href="index_surface.html">
+        <!-- <a href="index_surface.html">
           <button id="goHome">Go Surface Home</button>
-        </a>
+        </a> -->
         <a href="index_tv.html">
           <button id="goHome">Go TV Home</button>
         </a>
@@ -43,10 +48,31 @@
       </div>
       <div data-barba="container" data-barba-namespace="tv-speed" class="main-container speed tv">
         <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
-
-        <h1>This is Speed at TV</h1>
+        <div class="logo top-right"></div>
+        <h1><span>Your</span> top speed</h1>
+        <div class="vertical-line"></div>
+        <div class="top-speed">8</div>
+        <div class="kmh">km/h</div>
+        <div class="horizontal-line"></div>
+        <div class="did-you-know">
+          <p class="title">did you know</p>
+          <p class="content">A Tesla Model 3 takes 3.3 seconds to reach 100km/h</p>
+        </div>
       </div>
     </div>
     <script src="./js/barba.js"></script>
+    <script>
+      $(() => {
+        console.log("### Init in case of reload ###");
+        mainApp.init();
+        startGameListener("get_ready");
+
+        mainApp.ipcListener("go-home", (e, msg) => {
+          if (msg) {
+            tv.goHome();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

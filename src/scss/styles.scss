@@ -1,10 +1,14 @@
 @import "../../node_modules/reset-css/sass/reset";
-@import "./fonts.scss";
+@import "./_fonts.scss";
 
 $transition-cover-color: white;
 $main-green: #62bd18;
 $main-blue: #00539a;
-$font: "Mark Offc Pro";
+
+$nzrm-white: #e7f2f2;
+$nzrm-tan: #d2b48c;
+$nzrm-red: #a81818;
+$nzrm-brown: #865c27;
 
 @keyframes flashing {
   0% {
@@ -86,7 +90,7 @@ html {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: white;
+  background: black;
   overflow: hidden;
 }
 
@@ -145,9 +149,11 @@ body {
 
 #_surface-pro-res-ref {
   position: fixed;
-  // outline: 1px rgb(57, 255, 242) solid;
-  width: 1440px;
-  height: 960px;
+  outline: 1px rgb(57, 255, 242) solid;
+  // width: 1440px;
+  // height: 960px;
+  width: 1369px;
+  height: 912px;
   z-index: 99999999;
   pointer-events: none;
   top: 50%;
@@ -188,6 +194,24 @@ body {
   // display: none;
 }
 
+@mixin mainFontR($size: 12) {
+  font-family: "Roboto";
+  font-weight: normal;
+  font-size: $size + px;
+}
+
+@mixin mainFontB($size: 12) {
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: $size + px;
+}
+
+@mixin mainFontL($size: 12) {
+  font-family: "Roboto";
+  font-weight: lighter;
+  font-size: $size + px;
+}
+
 .main-container {
   position: absolute;
   top: 0;
@@ -207,10 +231,6 @@ body {
 
 .menu {
   background: yellow;
-}
-
-.title {
-  background: lime;
 }
 
 .demo {
@@ -265,10 +285,162 @@ body {
 }
 
 .progress {
-  height: 300px;
+  height: 642px;
 }
 
 .progress > svg {
   height: 100%;
   display: block;
+}
+
+.progress-bar-timer-digit {
+  @include mainFontB(335);
+  color: $nzrm-brown !important;
+}
+
+h1 {
+  @include mainFontB(95);
+  color: $nzrm-white;
+}
+
+h2 {
+  @include mainFontR(45);
+  color: $nzrm-tan;
+}
+
+.logo {
+  background: url(../images/logo.svg) no-repeat;
+}
+
+.red-button-icon {
+  background: url(../images/light\ button.svg);
+  width: 59px;
+  height: 27px;
+}
+
+.main-container.tv {
+  width: 100vw;
+  height: 100vh;
+  background: url(../images/bg-tv.jpg) no-repeat;
+  overflow: hidden;
+  display: flex;
+  @include flexCenter();
+
+  .logo {
+    width: 1212px;
+    height: 574px;
+  }
+
+  .title {
+    margin: -2.5rem 0 1.5rem 0;
+  }
+
+  .vertical-line {
+    width: 1px;
+    height: 175px;
+    background-color: $nzrm-tan;
+    margin: 35px 0;
+  }
+
+  .prompt {
+    display: flex;
+    color: $nzrm-tan;
+    @include mainFontL(28);
+
+    span {
+      @include mainFontB(28);
+      color: $nzrm-red;
+    }
+
+    .red-button-icon {
+      position: relative;
+      margin: 0 20px;
+      top: 2px;
+    }
+  }
+}
+
+.logo.top-right {
+  position: absolute;
+  width: 415px !important;
+  height: 197px !important;
+  top: 74px;
+  background-size: contain;
+  left: 1436px;
+}
+
+.main-container.get-ready.tv {
+  @include flexCenter();
+
+  #progress {
+    opacity: 0;
+    display: none;
+  }
+
+  .get-ready-text {
+    @include flexCenter();
+    flex-direction: column;
+    opacity: 0;
+    display: none;
+    h1 {
+      font-size: 135px;
+      margin-bottom: 13px;
+    }
+  }
+}
+
+.main-container.speed.tv {
+  @include flexCenter();
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+
+  h1 {
+    font-size: 60px;
+    text-transform: uppercase;
+    color: $nzrm-tan;
+    span {
+      @include mainFontL(60);
+    }
+  }
+
+  .vertical-line {
+    height: 98.5px;
+  }
+
+  .top-speed {
+    @include mainFontB(400);
+    color: $nzrm-white;
+  }
+
+  .kmh {
+    @include mainFontR(60);
+    color: $nzrm-tan;
+    font-style: italic;
+  }
+
+  .horizontal-line {
+    height: 1px;
+    width: 240px;
+    background-color: $nzrm-tan;
+    margin: 4em 0;
+  }
+
+  .did-you-know {
+    .title {
+      text-transform: uppercase;
+      color: $nzrm-tan;
+      @include mainFontB(28);
+      margin: 0;
+      margin-bottom: 0.5em;
+      @include flexCenter();
+      flex-direction: column;
+    }
+
+    .content {
+      @include mainFontL(28);
+      color: $nzrm-brown;
+      // text-transform: capitalize;
+    }
+  }
 }

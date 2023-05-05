@@ -18,6 +18,11 @@
     <script src="./js/surface.js"></script>
     <script src="./js/tv.js"></script>
     <title>Speed: Surface</title>
+    <script>
+      const base = new Base();
+      const mainApp = new MainApp();
+      const surface = new Surface();
+    </script>
   </head>
   <body class="noSelect">
     <!-- define the wrapper and the container -->
@@ -49,5 +54,18 @@
       </div>
     </div>
     <script src="./js/barba.js"></script>
+    <script>
+      $(() => {
+        console.log("### Init in case of reload ###");
+        mainApp.init();
+        startGameListener("get_ready");
+
+        mainApp.ipcListener("go-home", (e, msg) => {
+          if (msg) {
+            surface.goHome();
+          }
+        });
+      });
+    </script>
   </body>
 </html>
