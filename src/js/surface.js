@@ -32,6 +32,7 @@ class Surface {
   goHome() {
     console.log("### Surface go home signal, the home should be 'index_surface.html' ###");
     if (this.isFunFactsActive) this.closeFunFactsContainer();
+    // window.nzrm.send("top-speed-toggle", "false");
     barba.go("index_surface.html");
   }
 
@@ -109,8 +110,8 @@ class Surface {
   }
 
   topSpeedPageInit() {
-    let top_speed = mainApp.top_speed;
-    $(".top-speed").html(top_speed);
+    // let top_speed = mainApp.top_speed;
+    $(".top-speed").html("0");
   }
 
   funFactImageShow() {

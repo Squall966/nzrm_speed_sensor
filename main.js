@@ -267,7 +267,9 @@ ipcMain.on("appDir", (e, msg) => {
 ipcMain.on("top_speed", (e, msg) => {
   if (msg) {
     console.log("### Top speed from renderer: ", msg);
-    secondWin.webContents.send("top_speed", msg);
+    // secondWin.webContents.send("top_speed", msg);
+    windows[0].webContents.send("top_speed", msg);
+    windows[1].webContents.send("top_speed", msg);
   }
 });
 
@@ -295,5 +297,13 @@ ipcMain.on("go-home", (e, msg) => {
     windows[0].webContents.send("go-home", 1);
     windows[1].webContents.send("go-home", 1);
     console.log("### Go home signal ###");
+  }
+});
+
+ipcMain.on("top-speed-toggle", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("top-speed-toggle", msg);
+    windows[1].webContents.send("top-speed-toggle", msg);
+    console.log("### Top speed toggle ###");
   }
 });

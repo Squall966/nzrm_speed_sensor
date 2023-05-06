@@ -27,11 +27,12 @@ class Tv {
       onComplete: () => _this.startTimerCircleAnimation(true),
     });
 
-    console.log("### TV class init###");
+    console.log("### TV class init ###");
   }
 
   goHome() {
     console.log("### TV go home signal, the home should be 'index_tv.html' ###");
+    window.nzrm.send("top-speed-toggle", "false");
     barba.go("index_tv.html");
   }
 
@@ -71,6 +72,9 @@ class Tv {
         console.log("### Progress bar animated done, proceed to next page. ###");
         console.log(`### Top Speed now: ${mainApp.top_speed} ###`);
         if (isNavigate) barba.go("speed_tv.html");
+        // mainApp.topSpeedSignalToggle = true;
+        window.nzrm.send("top-speed-toggle", true);
+        console.log("### Top Speed Signal Toggle = ", mainApp.topSpeedSignalToggle);
       }
     );
 
@@ -102,8 +106,9 @@ class Tv {
       clearTimeout(_this.speedPageTimer);
       _this.speedPageTimer = null;
 
-      console.warn("!!! GO HOME turned off for DEV !!!");
-      // window.nzrm.send("go-home", true);
+      // console.warn("!!! GO HOME turned off for DEV !!!");
+      window.nzrm.send("go-home", true);
+      window.nzrm.send("reset-top-speed", true);
     }, _this.speedPageDelay * 1000);
   }
 }

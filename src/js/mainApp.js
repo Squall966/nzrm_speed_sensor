@@ -32,12 +32,14 @@ class MainApp extends Base {
       "Over long distances humans can outrun all other animals",
     ];
 
+    this.isButtonActive = false;
+
     // For DEMO ONLY
     this.mph;
     this.kmh;
     this.clear_display_timeout = 3000;
 
-    this.disableSerialForDev = true;
+    this.disableSerialForDev = false;
   }
   init() {
     console.log("### Main app class init ###");
@@ -48,6 +50,9 @@ class MainApp extends Base {
 
     /** Reset and initialise */
     this.resetTopSpeed();
+
+    // Listen to the top speed signal
+    this.listenToTopSpeed();
 
     console.log("### Is the kiosk connected to serial? ", this.connect_to_serial);
 
@@ -67,7 +72,7 @@ class MainApp extends Base {
     window.nzrm.send("reset-top-speed", 1);
     console.log(`### TOP SPEED is reset: ${this.top_speed}`);
 
-    this.topSpeedSignalToggle = false;
+    // this.topSpeedSignalToggle = false;
     console.warn("### Speed signal sending ended ###");
 
     if (this.resetSpeedTimer) {
@@ -195,6 +200,7 @@ class MainApp extends Base {
          */
         // console.log(readable_value);
         const final_value = readable_value.join("");
+        // console.log(final_value);
         _this.displaySpeed(final_value);
         readable_value = [];
       }
@@ -212,6 +218,20 @@ class MainApp extends Base {
     if (parseInt(value) > 0) {
       const kmhVal = Math.floor(parseInt(value) * 1.61);
 
+      if (kmhVal > _this.top_speed) {
+        _this.top_speed = kmhVal;
+
+        //I should be checking the toggle and sending the data here
+        console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
+        if (_this.topSpeedSignalToggle) {
+          window.nzrm.send("top_speed", _this.top_speed);
+          console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
+        }
+        console.log(`### TOP SPEED: ${_this.top_speed}`);
+      }
+
+      /** 
+       * These part is for Demo
       if (_this.mph && _this.kmh) {
         _this.mph.innerHTML = `${value} mph`;
         _this.kmh.innerHTML = `${kmhVal} km/h`;
@@ -223,13 +243,11 @@ class MainApp extends Base {
             _this.top_speed_meter.innerHTML = _this.top_speed + " km/h";
           }
 
-          /**
-           * I should be checking the toggle and sending the data here
-           */
+          //I should be checking the toggle and sending the data here
           console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
           if (_this.topSpeedSignalToggle) {
             window.nzrm.send("top_speed", _this.top_speed);
-            console.log("### Top Speed Sent! ###");
+            console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
           }
 
           console.log(`### TOP SPEED: ${_this.top_speed}`);
@@ -240,6 +258,7 @@ class MainApp extends Base {
           _this.kmh.innerHTML = `0 km/h`;
         }, _this.clear_display_timeout);
       }
+      */
     }
   }
 
@@ -252,8 +271,11 @@ class MainApp extends Base {
 
   keyBinding() {
     const _this = this;
+
+    if (_this.isButtonActive) return;
     $("html").on("keydown", (e) => _this.startSendingSignal(e, $("html")));
     // $("html").off("keydown");
+    _this.isButtonActive = true;
     console.log("### Button activated ###");
   }
 
@@ -263,7 +285,7 @@ class MainApp extends Base {
     // $("html").on("keydown", (e) => {
     if (e.key == "s" || e.key == "S") {
       e.preventDefault();
-      _this.topSpeedSignalToggle = true;
+      // _this.topSpeedSignalToggle = true;
       _this.startResetSpeedTimer();
       console.log("### Start sending the top speed signal ###");
 
@@ -281,6 +303,7 @@ class MainApp extends Base {
         if (!this.connect_to_serial) this.connectSerial();
       }
       ele.off("keydown");
+      _this.isButtonActive = false;
       console.log("### Button deactivated ###");
     }
     // });
@@ -321,5 +344,29 @@ class MainApp extends Base {
   releaseHtml() {
     $("html").removeClass("interaction-off");
     $("html").addClass("interaction-on");
+  }
+
+  listenToTopSpeed() {
+    const _this = this;
+
+    _this.ipcListener("top-speed-toggle", (e, msg) => {
+      if (msg) {
+        let toggle;
+        if (toggle == "false") _this.topSpeedSignalToggle = false;
+        _this.topSpeedSignalToggle = msg;
+      }
+    });
+
+    _this.ipcListener("top_speed", (e, msg) => {
+      const el = $(".top-speed");
+      console.log(el);
+      console.log("_this.topSpeedSignalToggle >>", _this.topSpeedSignalToggle);
+      if (el && _this.topSpeedSignalToggle == true) {
+        // console.log("Helloooooooooooooo  ", msg);
+        el.html(msg);
+      }
+    });
+
+    console.log("### Top speed listener ###");
   }
 }

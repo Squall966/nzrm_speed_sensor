@@ -80,9 +80,9 @@
     <script>
       $(() => {
         console.log("### Init in case of reload ###");
-        mainApp.init();
-        startGameListener("get_ready");
 
+        mainApp.init();
+        startGameListener("speed_surface");
         mainApp.ipcListener("go-home", (e, msg) => {
           if (msg) {
             surface.goHome();
@@ -90,6 +90,18 @@
         });
 
         surface.init();
+
+        /*
+        mainApp.init();
+        startGameListener("get_ready");
+        mainApp.ipcListener("go-home", (e, msg) => {
+          if (msg) {
+            surface.goHome();
+          }
+        });
+
+        surface.init();
+        */
       });
     </script>
   </body>
