@@ -628,3 +628,22 @@ h2 {
 .main-container.speed.surface .dummy-spacer {
   margin: 4.5em;
 }
+
+.little-icons-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+.little-icons-container .sprint-icon-s {
+  max-width: 83px;
+}
+.little-icons-container .rugby-icon-s {
+  max-width: 75px;
+}
+.little-icons-container .kiwi-icon-s {
+  max-width: 61px;
+}
+.little-icons-container .icon-s {
+  position: absolute;
+}

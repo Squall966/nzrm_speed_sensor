@@ -373,4 +373,36 @@ class MainApp extends Base {
   ipcSendSync(eventName, argument) {
     return window.nzrm.sendSync(eventName, argument);
   }
+
+  littleIconsAnimation(sprintPos, rugbyPos, kiwiPos) {
+    let sprint, rugby, kiwi;
+    let el = $(".main-container ");
+
+    /**
+     * Position object structure
+     * pos = {
+     *  start_x: int,
+     *  start_y: int,
+     *  end_x: int,
+     *  duration: int in second
+     * }
+     */
+
+    const container = $("<div>").addClass("little-icons-container");
+    sprint = $("<img>").addClass("sprint-icon-s icon-s").attr("src", "./images/sprint icon.svg");
+    rugby = $("<img>").addClass("rugby-icon-s icon-s").attr("src", "./images/rugby ball icon.svg");
+    kiwi = $("<img>").addClass("kiwi-icon-s icon-s").attr("src", "./images/kiwi icon.svg");
+
+    gsap.set(sprint, { x: sprintPos.start_x, y: sprintPos.start_y });
+    gsap.set(rugby, { x: rugbyPos.start_x, y: rugbyPos.start_y });
+    gsap.set(kiwi, { x: kiwiPos.start_x, y: kiwiPos.start_y });
+
+    $(el).append(container.append(sprint, rugby, kiwi));
+
+    let ease = "power4.easeOut";
+
+    gsap.to(sprint, { x: sprintPos.end_x, duration: sprintPos.duration, ease: ease });
+    gsap.to(rugby, { x: rugbyPos.end_x, duration: rugbyPos.duration, ease: ease });
+    gsap.to(kiwi, { x: kiwiPos.end_x, duration: kiwiPos.duration, ease: ease });
+  }
 }

@@ -589,3 +589,23 @@ h2 {
     margin: 4.5em;
   }
 }
+
+.little-icons-container {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+
+  .sprint-icon-s {
+    max-width: 83px;
+  }
+  .rugby-icon-s {
+    max-width: 75px;
+  }
+  .kiwi-icon-s {
+    max-width: 61px;
+  }
+  .icon-s {
+    position: absolute;
+  }
+}

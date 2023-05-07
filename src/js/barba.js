@@ -40,6 +40,26 @@ barba.init({
       namespace: "surface-home",
       beforeEnter(data) {
         mainApp.keyBinding();
+
+        let sprintPos = {
+          start_x: -100,
+          start_y: 604,
+          end_x: 66,
+          duration: 0.5,
+        };
+        let rugbyPos = {
+          start_x: -100,
+          start_y: 674,
+          end_x: 1255,
+          duration: 0.75,
+        };
+        let kiwiPos = {
+          start_x: -100,
+          start_y: 131,
+          end_x: 1215,
+          duration: 0.7,
+        };
+        mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
       },
     },
     {
@@ -47,11 +67,51 @@ barba.init({
       beforeEnter(data) {
         console.log("### Surface SPEED Page should init here");
         surface.topSpeedPageInit();
+
+        let sprintPos = {
+          start_x: -100,
+          start_y: 424,
+          end_x: 86,
+          duration: 0.5,
+        };
+        let rugbyPos = {
+          start_x: -100,
+          start_y: 674,
+          end_x: 1255,
+          duration: 0.75,
+        };
+        let kiwiPos = {
+          start_x: -100,
+          start_y: 440,
+          end_x: 1205,
+          duration: 0.7,
+        };
+        mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
       },
     },
     {
       namespace: "tv-home",
-      beforeEnter(data) {},
+      beforeEnter(data) {
+        let sprintPos = {
+          start_x: -100,
+          start_y: 727,
+          end_x: 230,
+          duration: 0.5,
+        };
+        let rugbyPos = {
+          start_x: -100,
+          start_y: 738,
+          end_x: 1636,
+          duration: 0.75,
+        };
+        let kiwiPos = {
+          start_x: -100,
+          start_y: 140,
+          end_x: 1572,
+          duration: 0.7,
+        };
+        mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
+      },
     },
     {
       namespace: "tv-get-ready",
@@ -59,6 +119,26 @@ barba.init({
         console.log("### TV GET READY page should init here");
         tv.init();
         // tv.startTimerCircleAnimation();
+
+        let sprintPos = {
+          start_x: -100,
+          start_y: 508,
+          end_x: 221,
+          duration: 0.5,
+        };
+        let rugbyPos = {
+          start_x: -100,
+          start_y: 954,
+          end_x: 1674,
+          duration: 0.75,
+        };
+        let kiwiPos = {
+          start_x: -100,
+          start_y: 540,
+          end_x: 1436,
+          duration: 0.7,
+        };
+        mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
       },
     },
     {
@@ -68,6 +148,26 @@ barba.init({
         tv.randomFunFact();
         tv.displayTopSpeed();
         tv.speedPageTimeOut();
+
+        let sprintPos = {
+          start_x: -100,
+          start_y: 139,
+          end_x: 178,
+          duration: 0.5,
+        };
+        let rugbyPos = {
+          start_x: -100,
+          start_y: 949,
+          end_x: 147,
+          duration: 0.75,
+        };
+        let kiwiPos = {
+          start_x: -100,
+          start_y: 531,
+          end_x: 1575,
+          duration: 0.7,
+        };
+        mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
       },
     },
     {
