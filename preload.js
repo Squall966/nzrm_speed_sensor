@@ -21,6 +21,11 @@ contextBridge.exposeInMainWorld("nzrm", {
     ipcRenderer.send(eventName, argument);
   },
 
+  sendSync: (eventName, argument) => {
+    if (!eventName || !argument) return false;
+    return ipcRenderer.sendSync(eventName, argument);
+  },
+
   topSpeed: (msg) => {
     if (msg) {
       ipcRenderer.send("top_speed", msg);

@@ -14,6 +14,10 @@ const logger = require("./modules/logger.js");
 // const { updater } = require("./modules/app_updater.js");
 // const db = require("./modules/database");
 const fs = require("fs");
+const Storage = require("./modules/Storage");
+
+const storage = new Storage();
+storage.init();
 
 app.commandLine.appendSwitch("enable-features", "ElectronSerialChooser");
 

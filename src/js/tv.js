@@ -2,13 +2,16 @@ class Tv {
   constructor() {
     this.progressBar = null;
     this.progressBarEl;
-    this.progressBarDefaultText = 3;
+    this.progressBarDefaultText = mainApp.ipcSendSync(
+      "get-single-config",
+      "get_ready_time_out_progress_bar"
+    );
     this.progressBarTimerDigit;
     this.body;
     this.tl = gsap.timeline({ defaults: { duration: 1, display: "flex" } });
-    this.getReadyTimeout = 3;
+    this.getReadyTimeout = mainApp.ipcSendSync("get-single-config", "get_ready_time_out_text");
     this.funFact;
-    this.speedPageDelay = 10;
+    this.speedPageDelay = mainApp.ipcSendSync("get-single-config", "top_speed_page_delay");
     this.speedPageTimer;
   }
 

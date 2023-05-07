@@ -39,7 +39,7 @@ class MainApp extends Base {
     this.kmh;
     this.clear_display_timeout = 3000;
 
-    this.disableSerialForDev = false;
+    this.disableSerialForDev = this.ipcSendSync("get-single-config", "disable_serial_for_dev"); // default should be false
   }
   init() {
     console.log("### Main app class init ###");
@@ -368,5 +368,9 @@ class MainApp extends Base {
     });
 
     console.log("### Top speed listener ###");
+  }
+
+  ipcSendSync(eventName, argument) {
+    return window.nzrm.sendSync(eventName, argument);
   }
 }

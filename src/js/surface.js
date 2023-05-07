@@ -16,6 +16,7 @@ class Surface {
 
     this.fact;
     this.isFunFactsActive = false;
+    this.funFactsTimeOut = mainApp.ipcSendSync("get-single-config", "fun_facts_time_out");
   }
 
   init() {
