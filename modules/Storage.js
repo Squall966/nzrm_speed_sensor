@@ -8,7 +8,7 @@ class Storage {
       get_ready_time_out_text: 3,
       get_ready_time_out_progress_bar: 3,
       top_speed_page_delay: 10,
-      fun_facts_time_out: 60,
+      fun_facts_time_out: 6,
       disable_serial_for_dev: false,
     };
   }

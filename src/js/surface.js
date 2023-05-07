@@ -16,6 +16,10 @@ class Surface {
 
     this.fact;
     this.isFunFactsActive = false;
+
+    // Fun Facts Timer
+    this.funFactsTimer;
+    this.funFactsTimerCount = 0;
     this.funFactsTimeOut = mainApp.ipcSendSync("get-single-config", "fun_facts_time_out");
   }
 
@@ -56,6 +60,21 @@ class Surface {
       });
       _this.funFactImageShow();
       _this.isFunFactsActive = true;
+
+      if (!_this.funFactsTimer) {
+        console.log("### Fun Facts Idle Timer is activated ###");
+        $(".fun-fact-image").on("click", () => {
+          _this.funFactsTimerCount = 0;
+          console.log("### Fun Facts Idle timer reset: ", _this.funFactsTimerCount);
+        });
+        _this.funFactsTimer = setInterval(() => {
+          _this.funFactsTimerCount += 1;
+          console.log("### Fun Facts Idle timer: ", _this.funFactsTimerCount);
+          if (_this.funFactsTimerCount >= _this.funFactsTimeOut) {
+            _this.closeFunFactsContainer();
+          }
+        }, 10000);
+      }
     } else {
       $(".prompt-container").fadeIn();
       _this.tl.to($(".logo.surface"), {
@@ -83,6 +102,7 @@ class Surface {
       ease: "power2.out",
       onComplete: () => _this.funFactsAfterEnter(true),
     });
+    _this.stopFunFactsTimer();
   }
 
   funFactOnClick() {
@@ -122,5 +142,14 @@ class Surface {
 
   funFactImageHide() {
     this.tl.to($(".fun-fact-image"), { alpha: 0, duration: 0.7, display: "none" });
+  }
+
+  stopFunFactsTimer() {
+    const _this = this;
+    $(".fun-fact-image").off("click");
+    clearInterval(_this.funFactsTimer);
+    _this.funFactsTimer = null;
+    _this.funFactsTimerCount = 0;
+    console.log("### Fun Facts Timer off ###");
   }
 } // Surface Class
