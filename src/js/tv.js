@@ -13,6 +13,7 @@ class Tv {
     this.funFact;
     this.speedPageDelay = mainApp.ipcSendSync("get-single-config", "top_speed_page_delay");
     this.speedPageTimer;
+    this.progressBarDelay = mainApp.ipcSendSync("get-single-config", "progress_bar_delay");
   }
 
   init() {
@@ -24,9 +25,15 @@ class Tv {
      * Get ready fade in
      */
     _this.tl.to(_this.body, { alpha: 1 });
-    _this.tl.to(_this.body, { alpha: 0, display: "none", delay: _this.getReadyTimeout });
+    _this.tl.to(_this.body, {
+      alpha: 0,
+      display: "none",
+      delay: _this.getReadyTimeout,
+      duration: 0.3,
+    });
     _this.tl.to(_this.progressBarEl, {
       alpha: 1,
+      duration: 0.3,
       onComplete: () => _this.startTimerCircleAnimation(true),
     });
 
@@ -66,18 +73,25 @@ class Tv {
       {
         duration: _this.progressBarDefaultText * 1000,
         step: function (state, circle) {
-          $(`.${_this.progressBarTimerDigit}`).html(
-            _this.progressBarDefaultText - Math.floor(circle.value() * _this.progressBarDefaultText)
-          );
+          let int =
+            _this.progressBarDefaultText -
+            Math.floor(circle.value() * _this.progressBarDefaultText);
+          let display_text = int;
+
+          if (int <= 0) display_text = "GO";
+          $(`.${_this.progressBarTimerDigit}`).html(display_text);
         },
       },
       function () {
         console.log("### Progress bar animated done, proceed to next page. ###");
         console.log(`### Top Speed now: ${mainApp.top_speed} ###`);
-        if (isNavigate) barba.go("speed_tv.html");
-        // mainApp.topSpeedSignalToggle = true;
-        window.nzrm.send("top-speed-toggle", true);
-        console.log("### Top Speed Signal Toggle = ", mainApp.topSpeedSignalToggle);
+
+        // Delay a second before going to next page
+        setTimeout(() => {
+          if (isNavigate) barba.go("speed_tv.html");
+          window.nzrm.send("top-speed-toggle", true);
+          console.log("### Top Speed Signal Toggle = ", mainApp.topSpeedSignalToggle);
+        }, _this.progressBarDelay * 1000);
       }
     );
 
