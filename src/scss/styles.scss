@@ -615,3 +615,43 @@ h2 {
     position: absolute;
   }
 }
+
+.bg-video {
+  position: absolute;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+
+  video {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.surface-info {
+  @include flexCenter();
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+
+  .spacer {
+    pointer-events: none;
+    margin-bottom: 30em;
+  }
+}
+
+.tv-home-info {
+  @extend .surface-info;
+
+  .spacer {
+    pointer-events: none;
+    margin-bottom: 35em;
+  }
+}

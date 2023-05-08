@@ -60,6 +60,7 @@ barba.init({
           duration: 0.7,
         };
         mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
+        $("#surface-video").trigger("play");
       },
     },
     {
@@ -111,6 +112,7 @@ barba.init({
           duration: 0.7,
         };
         mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
+        $("#tv-video").trigger("play");
       },
     },
     {
