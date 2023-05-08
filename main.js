@@ -180,6 +180,8 @@ app.whenReady().then(() => {
     secondWin = new BrowserWindow({
       x: externalDisplay.bounds.x + 50,
       y: externalDisplay.bounds.y + 50,
+      autoHideMenuBar: !isDev,
+      kiosk: isDev ? false : true,
       webPreferences: {
         preload: path.join(__dirname, "preload.js"),
         contextIsolation: true,
