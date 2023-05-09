@@ -343,25 +343,35 @@ h2 {
 
   .vertical-line {
     width: 1px;
-    height: 175px;
+    // height: 175px;
+    height: 150px;
     background-color: $nzrm-tan;
     margin: 35px 0;
+    margin-bottom: 30px;
   }
 
+  $prompt-font-size: 50;
   .prompt {
     display: flex;
     color: $nzrm-tan;
-    @include mainFontL(28);
+    // @include mainFontL(28);
+    @include mainFontL($prompt-font-size);
+    text-align: center;
 
     span {
-      @include mainFontB(28);
       color: $nzrm-red;
+      @include mainFontB($prompt-font-size);
     }
 
+    $red-button-size: 70px;
     .red-button-icon {
-      position: relative;
-      margin: 0 20px;
-      top: 2px;
+      position: absolute;
+      transform: translate(825px, 43px);
+      width: $red-button-size;
+      height: $red-button-size;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
     }
   }
 }

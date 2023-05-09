@@ -375,27 +375,33 @@ h2 {
 }
 .main-container.tv .vertical-line {
   width: 1px;
-  height: 175px;
+  height: 150px;
   background-color: #d2b48c;
   margin: 35px 0;
+  margin-bottom: 30px;
 }
 .main-container.tv .prompt {
   display: flex;
   color: #d2b48c;
   font-family: "Roboto";
   font-weight: lighter;
-  font-size: 28px;
+  font-size: 50px;
+  text-align: center;
 }
 .main-container.tv .prompt span {
+  color: #a81818;
   font-family: "Roboto";
   font-weight: bold;
-  font-size: 28px;
-  color: #a81818;
+  font-size: 50px;
 }
 .main-container.tv .prompt .red-button-icon {
-  position: relative;
-  margin: 0 20px;
-  top: 2px;
+  position: absolute;
+  transform: translate(825px, 43px);
+  width: 70px;
+  height: 70px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .logo.top-right {
