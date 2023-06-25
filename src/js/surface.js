@@ -38,6 +38,11 @@ class Surface {
     console.log("### Surface go home signal, the home should be 'index_surface.html' ###");
     if (this.isFunFactsActive) this.closeFunFactsContainer();
     // window.nzrm.send("top-speed-toggle", "false");
+    /**
+     * Reset current speed index
+     */
+    console.log("### Reset current speed index ###");
+    mainApp.current_speed_index = 0;
     barba.go("index_surface.html");
   }
 

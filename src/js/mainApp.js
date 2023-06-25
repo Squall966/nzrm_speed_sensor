@@ -40,6 +40,12 @@ class MainApp extends Base {
     this.clear_display_timeout = 3000;
 
     this.disableSerialForDev = this.ipcSendSync("get-single-config", "disable_serial_for_dev"); // default should be false
+
+    /**
+     * New Featured@26 Jun
+     */
+    this.maximum_speed_index = this.ipcSendSync("get-single-config", "maximum_speed_index");
+    this.current_speed_index = 0;
   }
   init() {
     console.log("### Main app class init ###");
@@ -163,6 +169,7 @@ class MainApp extends Base {
     } catch (error) {
       //   _this.dialogMessage("Serial Connection Failed: " + error);
       console.error("Serial Connection Failed: " + error);
+      return false;
     }
   }
 
@@ -198,11 +205,19 @@ class MainApp extends Base {
          * The end of the data is a "y", so we know we have got a full data now
          * we should update the display and reset the array
          */
-        // console.log(readable_value);
-        const final_value = readable_value.join("");
-        // console.log(final_value);
-        _this.displaySpeed(final_value);
-        readable_value = [];
+
+        /**
+         * New featured@26 Jun
+         * Check if the value has been read over certain times
+         */
+        if (_this.current_speed_index < _this.maximum_speed_index) {
+          // console.log(readable_value);
+          const final_value = readable_value.join("");
+          // console.log(final_value);
+          _this.displaySpeed(final_value);
+          readable_value = [];
+          _this.current_speed_index += 1;
+        }
       }
     }
   }
@@ -279,7 +294,7 @@ class MainApp extends Base {
     console.log("### Button activated ###");
   }
 
-  startSendingSignal(e, ele) {
+  async startSendingSignal(e, ele) {
     const _this = this;
 
     // $("html").on("keydown", (e) => {
@@ -300,7 +315,10 @@ class MainApp extends Base {
         /**
          * Request port requires a user gesture
          */
-        if (!this.connect_to_serial) this.connectSerial();
+        console.warn("### Request port requires a user gesture ###");
+        if (!this.connect_to_serial) {
+          if (!(await this.connectSerial())) console.warn("### Port is not opened!! ###");
+        }
       }
       ele.off("keydown");
       _this.isButtonActive = false;
