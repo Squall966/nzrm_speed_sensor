@@ -43,6 +43,16 @@ class Surface {
      */
     console.log("### Reset current speed index ###");
     mainApp.current_speed_index = 0;
+
+    /**
+     * Reset listening duration timer if there is any
+     */
+    if (mainApp.listening_duration_timeout) {
+      clearTimeout(mainApp.listening_duration_timeout);
+      mainApp.listening_duration_timeout = null;
+    }
+    mainApp.stopSendingSpeed = false; /** Make sure the speed is sent */
+
     barba.go("index_surface.html");
   }
 

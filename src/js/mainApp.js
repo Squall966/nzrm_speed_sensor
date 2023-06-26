@@ -46,6 +46,11 @@ class MainApp extends Base {
      */
     this.maximum_speed_index = this.ipcSendSync("get-single-config", "maximum_speed_index");
     this.current_speed_index = 0;
+
+    this.listening_duration = this.ipcSendSync("get-single-config", "listening_duration"); // 0 = off;
+    this.listening_duration_timeout = null;
+
+    this.stopSendingSpeed = false;
   }
   init() {
     console.log("### Main app class init ###");
@@ -184,6 +189,9 @@ class MainApp extends Base {
 
     // Listen to data coming from the serial device.
     let readable_value = [];
+
+    _this.stopSendingSpeed = false; /** Make sure the speed is sent */
+
     while (true) {
       const { value, done } = await _this.reader.read();
       if (done) {
@@ -205,21 +213,41 @@ class MainApp extends Base {
          * The end of the data is a "y", so we know we have got a full data now
          * we should update the display and reset the array
          */
+        if (_this.stopSendingSpeed) sendSpeedToDisplay();
 
-        /**
-         * New featured@26 Jun
-         * Check if the value has been read over certain times
-         */
-        if (_this.current_speed_index < _this.maximum_speed_index) {
-          // console.log(readable_value);
-          const final_value = readable_value.join("");
-          // console.log(final_value);
-          _this.displaySpeed(final_value);
-          readable_value = [];
-          _this.current_speed_index += 1;
+        if (_this.listening_duration && _this.listening_duration > 0) {
+          if (_this.listening_duration_timeout) {
+            clearTimeout(_this.listening_duration_timeout);
+            _this.listening_duration_timeout = null;
+          }
+
+          _this.listening_duration_timeout = setTimeout(() => {
+            _this.stopSendingSpeed = true;
+            console.warn("### Stop sending speed ###");
+            clearTimeout(_this.listening_duration_timeout);
+            _this.listening_duration_timeout = null;
+          }, _this.listening_duration * 1000);
         }
       }
     }
+
+    /**
+     * Newly added @ Jun 26
+     */
+    const sendSpeedToDisplay = () => {
+      /**
+       * New featured@26 Jun
+       * Check if the value has been read over certain times
+       */
+      if (_this.current_speed_index < _this.maximum_speed_index) {
+        // console.log(readable_value);
+        const final_value = readable_value.join("");
+        // console.log(final_value);
+        _this.displaySpeed(final_value);
+        readable_value = [];
+        _this.current_speed_index += 1;
+      }
+    };
   }
 
   displaySpeed(value) {
