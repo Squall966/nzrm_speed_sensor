@@ -31,6 +31,11 @@ if (isDev) {
   } catch {}
 }
 
+// -------- INDEX PAGE --------------------------
+// const index_page =`file://${__dirname}/src/index_surface.html`
+const index_page = `./src/index_surface.html`;
+// const index_page = `./src/error.html`;
+
 // -------- Logger --------------------------
 // logger(appDirectory);
 logger.logger(appDir);
@@ -69,10 +74,8 @@ function createWindow(width = null, height = null) {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadFile("./src/index_surface.html");
-  // mainWindow.loadURL(`file://${__dirname}/src/demo.html`);
-  // mainWindow.loadURL(`file://${__dirname}/src/image-slider.html`);
-
+  mainWindow.loadFile(index_page);
+  // mainWindow.loadFile("./src/index_surface.html");
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools();
@@ -311,5 +314,13 @@ ipcMain.on("top-speed-toggle", (e, msg) => {
     windows[0].webContents.send("top-speed-toggle", msg);
     windows[1].webContents.send("top-speed-toggle", msg);
     console.log("### Top speed toggle ###");
+  }
+});
+
+ipcMain.on("display-error-message", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("display-error-message", msg);
+    windows[1].webContents.send("display-error-message", msg);
+    console.log("### Display Error Message ###");
   }
 });

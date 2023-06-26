@@ -85,6 +85,14 @@
             tv.goHome();
           }
         });
+
+        mainApp.ipcListener("display-error-message", (e, msg) => {
+          if (msg) {
+            // console.log(msg);
+            tv.goErrorPage();
+          }
+        });
+
         /*
         console.log("### Jqeury is ready ###");
 

@@ -46,6 +46,11 @@ class Tv {
     barba.go("index_tv.html");
   }
 
+  goErrorPage() {
+    console.log("### Display error page###");
+    barba.go("error.html");
+  }
+
   progressBarSetup() {
     const _this = this;
     _this.progressBarTimerDigit = "progress-bar-timer-digit";

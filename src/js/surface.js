@@ -56,6 +56,11 @@ class Surface {
     barba.go("index_surface.html");
   }
 
+  goErrorPage() {
+    console.log("### Display error page###");
+    barba.go("error.html");
+  }
+
   funFactsInit() {
     const _this = this;
     _this.funFactOnClick();

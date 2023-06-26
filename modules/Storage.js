@@ -12,6 +12,8 @@ class Storage {
       fun_facts_time_out: 6,
       disable_serial_for_dev: false,
       maximum_speed_index: 3,
+      error_page_timeout: 5,
+      maximum_top_speed: 35,
     };
   }
 

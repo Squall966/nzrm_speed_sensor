@@ -173,6 +173,16 @@ barba.init({
       },
     },
     {
+      namespace: "error-message",
+      beforeEnter(data) {
+        setTimeout(() => {
+          console.log("### Error Page timeout, go home ###");
+          window.nzrm.send("go-home", "gohome");
+        }, mainApp.error_page_timeout * 1000);
+        console.log("### Error message page init ###");
+      },
+    },
+    {
       namespace: "demo",
       beforeEnter(data) {
         console.log("### Main app should init here");

@@ -51,6 +51,9 @@ class MainApp extends Base {
     this.listening_duration_timeout = null;
 
     this.stopSendingSpeed = false;
+
+    this.error_page_timeout = this.ipcSendSync("get-single-config", "error_page_timeout");
+    this.maximum_top_speed = this.ipcSendSync("get-single-config", "maximum_top_speed");
   }
   init() {
     console.log("### Main app class init ###");
@@ -174,6 +177,14 @@ class MainApp extends Base {
     } catch (error) {
       //   _this.dialogMessage("Serial Connection Failed: " + error);
       console.error("Serial Connection Failed: " + error);
+
+      /**
+       * Testing error page
+       */
+      // setTimeout(() => {
+      //   window.nzrm.send("display-error-message", "### Error page testing");
+      // }, 3000);
+
       return false;
     }
   }
@@ -243,6 +254,9 @@ class MainApp extends Base {
         // console.log(readable_value);
         const final_value = readable_value.join("");
         // console.log(final_value);
+
+        /** Check if the final value is larger than the settings */
+
         _this.displaySpeed(final_value);
         readable_value = [];
         _this.current_speed_index += 1;
@@ -267,8 +281,17 @@ class MainApp extends Base {
         //I should be checking the toggle and sending the data here
         console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
         if (_this.topSpeedSignalToggle) {
-          window.nzrm.send("top_speed", _this.top_speed);
-          console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
+          /**
+           * Check if the top speed is over maximum top speed
+           */
+          if (_this.top_speed >= _this.maximum_top_speed) {
+            console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
+            window.nzrm.send("display-error-message", "### Error page testing");
+            return false;
+          } else {
+            window.nzrm.send("top_speed", _this.top_speed);
+            console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
+          }
         }
         console.log(`### TOP SPEED: ${_this.top_speed}`);
       }

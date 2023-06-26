@@ -92,6 +92,13 @@
           }
         });
 
+        mainApp.ipcListener("display-error-message", (e, msg) => {
+          if (msg) {
+            // console.log(msg);
+            surface.goErrorPage();
+          }
+        });
+
         surface.init();
 
         // $("#goHome").on("click", () => {
