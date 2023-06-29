@@ -324,3 +324,11 @@ ipcMain.on("display-error-message", (e, msg) => {
     console.log("### Display Error Message ###");
   }
 });
+
+ipcMain.on("stop-sending-speed", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("stop-sending-speed", msg);
+    windows[1].webContents.send("stop-sending-speed", msg);
+    console.log("### stop-sending-speed ###");
+  }
+});

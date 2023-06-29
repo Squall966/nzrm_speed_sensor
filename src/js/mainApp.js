@@ -203,6 +203,28 @@ class MainApp extends Base {
 
     _this.stopSendingSpeed = false; /** Make sure the speed is sent */
 
+    /**
+     * Newly added @ Jun 26
+     */
+    const sendSpeedToDisplay = () => {
+      /**
+       * New featured@26 Jun
+       * Check if the value has been read over certain times
+       */
+      // if (_this.current_speed_index < _this.maximum_speed_index) {
+      // console.log("### Readable value ---- ");
+      // console.log(readable_value);
+      const final_value = readable_value.join("");
+      // console.log("### Final value: ", final_value);
+
+      /** Check if the final value is larger than the settings */
+
+      _this.displaySpeed(final_value);
+      readable_value = [];
+      _this.current_speed_index += 1;
+      // }
+    };
+
     while (true) {
       const { value, done } = await _this.reader.read();
       if (done) {
@@ -216,52 +238,21 @@ class MainApp extends Base {
 
       // console.log(`### Value from sensor: ${parseInt(value)}`);
       // console.log(`### Value from sensor: ${value}`);
-      if (parseInt(value) > 0) {
-        readable_value = [...readable_value, parseInt(value)];
-      }
-      if (value == "y") {
-        /**
-         * The end of the data is a "y", so we know we have got a full data now
-         * we should update the display and reset the array
-         */
-        if (_this.stopSendingSpeed) sendSpeedToDisplay();
 
-        if (_this.listening_duration && _this.listening_duration > 0) {
-          if (_this.listening_duration_timeout) {
-            clearTimeout(_this.listening_duration_timeout);
-            _this.listening_duration_timeout = null;
-          }
-
-          _this.listening_duration_timeout = setTimeout(() => {
-            _this.stopSendingSpeed = true;
-            console.warn("### Stop sending speed ###");
-            clearTimeout(_this.listening_duration_timeout);
-            _this.listening_duration_timeout = null;
-          }, _this.listening_duration * 1000);
+      if (!_this.stopSendingSpeed) {
+        if (parseInt(value) > 0) {
+          readable_value = [...readable_value, parseInt(value)];
+        }
+        if (value == "y") {
+          /**
+           * The end of the data is a "y", so we know we have got a full data now
+           * we should update the display and reset the array
+           */
+          console.log("### Check is Stop Sending: ", _this.stopSendingSpeed);
+          sendSpeedToDisplay();
         }
       }
-    }
-
-    /**
-     * Newly added @ Jun 26
-     */
-    const sendSpeedToDisplay = () => {
-      /**
-       * New featured@26 Jun
-       * Check if the value has been read over certain times
-       */
-      if (_this.current_speed_index < _this.maximum_speed_index) {
-        // console.log(readable_value);
-        const final_value = readable_value.join("");
-        // console.log(final_value);
-
-        /** Check if the final value is larger than the settings */
-
-        _this.displaySpeed(final_value);
-        readable_value = [];
-        _this.current_speed_index += 1;
-      }
-    };
+    } // while loop
   }
 
   displaySpeed(value) {
@@ -272,11 +263,12 @@ class MainApp extends Base {
       return false;
     }
 
+    // console.log(`?????????????????? value = ${value}`);
     if (parseInt(value) > 0) {
       const kmhVal = Math.floor(parseInt(value) * 1.61);
 
       if (kmhVal > _this.top_speed) {
-        _this.top_speed = kmhVal;
+        _this.top_speed = parseInt(kmhVal);
 
         //I should be checking the toggle and sending the data here
         console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
@@ -284,6 +276,7 @@ class MainApp extends Base {
           /**
            * Check if the top speed is over maximum top speed
            */
+          console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
           if (_this.top_speed >= _this.maximum_top_speed) {
             console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
             window.nzrm.send("display-error-message", "### Error page testing");
@@ -295,36 +288,6 @@ class MainApp extends Base {
         }
         console.log(`### TOP SPEED: ${_this.top_speed}`);
       }
-
-      /** 
-       * These part is for Demo
-      if (_this.mph && _this.kmh) {
-        _this.mph.innerHTML = `${value} mph`;
-        _this.kmh.innerHTML = `${kmhVal} km/h`;
-
-        if (kmhVal > _this.top_speed) {
-          _this.top_speed = kmhVal;
-
-          if (_this.top_speed_meter) {
-            _this.top_speed_meter.innerHTML = _this.top_speed + " km/h";
-          }
-
-          //I should be checking the toggle and sending the data here
-          console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
-          if (_this.topSpeedSignalToggle) {
-            window.nzrm.send("top_speed", _this.top_speed);
-            console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
-          }
-
-          console.log(`### TOP SPEED: ${_this.top_speed}`);
-        }
-
-        setTimeout(() => {
-          _this.mph.innerHTML = `0 mph`;
-          _this.kmh.innerHTML = `0 km/h`;
-        }, _this.clear_display_timeout);
-      }
-      */
     }
   }
 
@@ -367,13 +330,15 @@ class MainApp extends Base {
          * Request port requires a user gesture
          */
         console.warn("### Request port requires a user gesture ###");
+
+        ele.off("keydown");
+        _this.isButtonActive = false;
+        console.log("### Button deactivated ###");
+
         if (!this.connect_to_serial) {
           if (!(await this.connectSerial())) console.warn("### Port is not opened!! ###");
         }
       }
-      ele.off("keydown");
-      _this.isButtonActive = false;
-      console.log("### Button deactivated ###");
     }
     // });
   }

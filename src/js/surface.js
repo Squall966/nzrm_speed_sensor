@@ -31,6 +31,14 @@ class Surface {
 
     _this.funFactsInit();
 
+    mainApp.ipcListener("stop-sending-speed", (e, msg) => {
+      console.log("### Stop sending signal set! ###");
+      if (msg) {
+        console.log(`### Stop sending speed signal: ${msg}`);
+        mainApp.stopSendingSpeed = msg;
+      }
+    });
+
     console.log("### Surface Class init ###");
   }
 

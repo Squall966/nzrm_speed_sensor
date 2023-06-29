@@ -170,6 +170,28 @@ barba.init({
           duration: 0.7,
         };
         mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
+
+        if (mainApp.listening_duration && mainApp.listening_duration > 0) {
+          if (mainApp.listening_duration_timeout) {
+            clearTimeout(mainApp.listening_duration_timeout);
+            mainApp.listening_duration_timeout = null;
+          }
+
+          console.log(
+            `### Listening Duration activate for ${mainApp.listening_duration} seconds ###`
+          );
+
+          mainApp.listening_duration_timeout = setTimeout(() => {
+            /**
+             * Need to fire a socket signal
+             */
+            // mainApp.stopSendingSpeed = true;
+            window.nzrm.send("stop-sending-speed", true);
+            console.warn("### Stop sending speed ###");
+            clearTimeout(mainApp.listening_duration_timeout);
+            mainApp.listening_duration_timeout = null;
+          }, mainApp.listening_duration * 1000);
+        }
       },
     },
     {
