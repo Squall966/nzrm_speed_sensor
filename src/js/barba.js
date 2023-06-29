@@ -171,6 +171,7 @@ barba.init({
         };
         mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
 
+        // Listening Duration
         if (mainApp.listening_duration && mainApp.listening_duration > 0) {
           if (mainApp.listening_duration_timeout) {
             clearTimeout(mainApp.listening_duration_timeout);
@@ -182,10 +183,6 @@ barba.init({
           );
 
           mainApp.listening_duration_timeout = setTimeout(() => {
-            /**
-             * Need to fire a socket signal
-             */
-            // mainApp.stopSendingSpeed = true;
             window.nzrm.send("stop-sending-speed", true);
             console.warn("### Stop sending speed ###");
             clearTimeout(mainApp.listening_duration_timeout);

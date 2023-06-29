@@ -201,8 +201,6 @@ class MainApp extends Base {
     // Listen to data coming from the serial device.
     let readable_value = [];
 
-    _this.stopSendingSpeed = false; /** Make sure the speed is sent */
-
     /**
      * Newly added @ Jun 26
      */
@@ -211,7 +209,6 @@ class MainApp extends Base {
        * New featured@26 Jun
        * Check if the value has been read over certain times
        */
-      // if (_this.current_speed_index < _this.maximum_speed_index) {
       // console.log("### Readable value ---- ");
       // console.log(readable_value);
       const final_value = readable_value.join("");
@@ -221,8 +218,6 @@ class MainApp extends Base {
 
       _this.displaySpeed(final_value);
       readable_value = [];
-      _this.current_speed_index += 1;
-      // }
     };
 
     while (true) {
@@ -239,6 +234,9 @@ class MainApp extends Base {
       // console.log(`### Value from sensor: ${parseInt(value)}`);
       // console.log(`### Value from sensor: ${value}`);
 
+      // console.log(
+      //   `### Check is Stop Sending: ${_this.stopSendingSpeed} || Spd i: ${_this.current_speed_index}`
+      // );
       if (!_this.stopSendingSpeed) {
         if (parseInt(value) > 0) {
           readable_value = [...readable_value, parseInt(value)];
@@ -248,7 +246,6 @@ class MainApp extends Base {
            * The end of the data is a "y", so we know we have got a full data now
            * we should update the display and reset the array
            */
-          console.log("### Check is Stop Sending: ", _this.stopSendingSpeed);
           sendSpeedToDisplay();
         }
       }
@@ -276,7 +273,7 @@ class MainApp extends Base {
           /**
            * Check if the top speed is over maximum top speed
            */
-          console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
+          // console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
           if (_this.top_speed >= _this.maximum_top_speed) {
             console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
             window.nzrm.send("display-error-message", "### Error page testing");
@@ -284,6 +281,14 @@ class MainApp extends Base {
           } else {
             window.nzrm.send("top_speed", _this.top_speed);
             console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
+            _this.current_speed_index += 1;
+            console.log(
+              `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
+            );
+            if (_this.current_speed_index >= _this.maximum_speed_index) {
+              window.nzrm.send("stop-sending-speed", true);
+              console.log(`### ${mainApp.current_speed_index} reaches limit, stop sending now!`);
+            }
           }
         }
         console.log(`### TOP SPEED: ${_this.top_speed}`);
@@ -339,6 +344,14 @@ class MainApp extends Base {
           if (!(await this.connectSerial())) console.warn("### Port is not opened!! ###");
         }
       }
+
+      // Clear current speed index on while gane starts
+      console.log(
+        "### Clear current speed index & reset stop-sending-speed while game starts  ###"
+      );
+      _this.current_speed_index = 0;
+      window.nzrm.send("stop-sending-speed", false);
+      _this.stopSendingSpeed = false;
     }
     // });
   }

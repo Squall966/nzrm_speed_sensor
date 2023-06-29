@@ -59,7 +59,8 @@ class Surface {
       clearTimeout(mainApp.listening_duration_timeout);
       mainApp.listening_duration_timeout = null;
     }
-    mainApp.stopSendingSpeed = false; /** Make sure the speed is sent */
+    // mainApp.stopSendingSpeed = false; /** Make sure the speed is sent */
+    // window.nzrm.send("stop-sending-speed", false);
 
     barba.go("index_surface.html");
   }
