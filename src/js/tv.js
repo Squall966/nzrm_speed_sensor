@@ -14,6 +14,11 @@ class Tv {
     this.speedPageDelay = mainApp.ipcSendSync("get-single-config", "top_speed_page_delay");
     this.speedPageTimer;
     this.progressBarDelay = mainApp.ipcSendSync("get-single-config", "progress_bar_delay");
+
+    /**
+     * NEW @ 30 JUN
+     */
+    this.recorded_top_speed;
   }
 
   init() {
@@ -128,9 +133,18 @@ class Tv {
       clearTimeout(_this.speedPageTimer);
       _this.speedPageTimer = null;
 
-      // console.warn("!!! GO HOME turned off for DEV !!!");
-      window.nzrm.send("go-home", true);
-      window.nzrm.send("reset-top-speed", true);
+      console.log(
+        `### Top speed ${_this.recorded_top_speed} vs ${mainApp.maximum_top_speed} Maximum top speed ###`
+      );
+      if (_this.recorded_top_speed >= mainApp.maximum_top_speed) {
+        console.warn(`### Top speed ${_this.recorded_top_speed} is doggy, go to error page ###`);
+        window.nzrm.send("display-error-message", "### Error page testing");
+        // return false;
+      } else {
+        // console.warn("!!! GO HOME turned off for DEV !!!");
+        window.nzrm.send("go-home", true);
+        window.nzrm.send("reset-top-speed", true);
+      }
     }, _this.speedPageDelay * 1000);
   }
 }

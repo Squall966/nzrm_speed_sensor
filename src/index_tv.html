@@ -93,6 +93,14 @@
           }
         });
 
+        mainApp.ipcListener("recored-top-speed", (e, msg) => {
+          if (msg) {
+            // console.log(msg);
+            tv.recorded_top_speed = msg;
+            console.log(`### TV RECORDED TOP SPEED!! ===> ${tv.recorded_top_speed}`);
+          }
+        });
+
         /*
         console.log("### Jqeury is ready ###");
 

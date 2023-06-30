@@ -54,6 +54,8 @@ class MainApp extends Base {
 
     this.error_page_timeout = this.ipcSendSync("get-single-config", "error_page_timeout");
     this.maximum_top_speed = this.ipcSendSync("get-single-config", "maximum_top_speed");
+
+    this.recorded_top_speed;
   }
   init() {
     console.log("### Main app class init ###");
@@ -270,26 +272,30 @@ class MainApp extends Base {
         //I should be checking the toggle and sending the data here
         console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
         if (_this.topSpeedSignalToggle) {
+          window.nzrm.send("top_speed", _this.top_speed);
+          window.nzrm.send("recored-top-speed", _this.top_speed); // this is for TV.goHome() to check
+          console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
+          _this.current_speed_index += 1;
+          console.log(
+            `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
+          );
+          if (_this.current_speed_index >= _this.maximum_speed_index) {
+            window.nzrm.send("stop-sending-speed", true);
+            console.log(`### ${mainApp.current_speed_index} reaches limit, stop sending now!`);
+          }
+
           /**
            * Check if the top speed is over maximum top speed
+           * This checker was moved to "tv.gohome()"
            */
+          /*
           // console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
           if (_this.top_speed >= _this.maximum_top_speed) {
             console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
-            window.nzrm.send("display-error-message", "### Error page testing");
-            return false;
-          } else {
-            window.nzrm.send("top_speed", _this.top_speed);
-            console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
-            _this.current_speed_index += 1;
-            console.log(
-              `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
-            );
-            if (_this.current_speed_index >= _this.maximum_speed_index) {
-              window.nzrm.send("stop-sending-speed", true);
-              console.log(`### ${mainApp.current_speed_index} reaches limit, stop sending now!`);
-            }
+            // window.nzrm.send("display-error-message", "### Error page testing");
+            // return false;
           }
+           */
         }
         console.log(`### TOP SPEED: ${_this.top_speed}`);
       }

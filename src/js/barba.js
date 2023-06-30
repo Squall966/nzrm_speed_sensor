@@ -196,7 +196,8 @@ barba.init({
       beforeEnter(data) {
         setTimeout(() => {
           console.log("### Error Page timeout, go home ###");
-          window.nzrm.send("go-home", "gohome");
+          window.nzrm.send("go-home", true);
+          window.nzrm.send("reset-top-speed", true);
         }, mainApp.error_page_timeout * 1000);
         console.log("### Error message page init ###");
       },

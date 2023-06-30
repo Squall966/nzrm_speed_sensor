@@ -332,3 +332,11 @@ ipcMain.on("stop-sending-speed", (e, msg) => {
     console.log("### stop-sending-speed ###");
   }
 });
+
+ipcMain.on("recored-top-speed", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("recored-top-speed", msg);
+    windows[1].webContents.send("recored-top-speed", msg);
+    console.log(`### recored-top-speed: ${msg} ###`);
+  }
+});
