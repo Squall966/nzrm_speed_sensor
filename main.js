@@ -248,10 +248,11 @@ app.on("window-all-closed", function () {
 //   focusInMiliseconds(firstWin);
 // });
 
-const focusInMiliseconds = (window, ms = 200) => {
+const focusInMiliseconds = (window, ms = 1000) => {
   setTimeout(() => {
     // console.log(window);
     window.focus();
+    console.log("### WINDOWS FOCUSED!! ###");
   }, ms);
 };
 
