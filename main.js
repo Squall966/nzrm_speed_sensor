@@ -22,14 +22,14 @@ storage.init();
 app.commandLine.appendSwitch("enable-features", "ElectronSerialChooser");
 
 // Hot Reload
-if (isDev) {
-  try {
-    require("electron-reloader")(module, {
-      // debug: true,
-      watchRenderer: true,
-    });
-  } catch {}
-}
+// if (isDev) {
+//   try {
+//     require("electron-reloader")(module, {
+//       // debug: true,
+//       watchRenderer: true,
+//     });
+//   } catch {}
+// }
 
 // -------- INDEX PAGE --------------------------
 // const index_page =`file://${__dirname}/src/index_surface.html`
@@ -80,6 +80,7 @@ function createWindow(width = null, height = null) {
   if (isDev) {
     mainWindow.webContents.openDevTools();
   } else {
+    // mainWindow.webContents.openDevTools();
     mainWindow.setAlwaysOnTop(true, "screen-saver");
   }
 
@@ -244,15 +245,12 @@ app.on("window-all-closed", function () {
 /**
  * Set the focus on main window (first window)
  */
-// secondWin.on("show", () => {
-//   focusInMiliseconds(firstWin);
-// });
-
-const focusInMiliseconds = (window, ms = 1000) => {
+const focusInMiliseconds = (window, ms = 10000) => {
   setTimeout(() => {
     // console.log(window);
-    window.focus();
-    console.log("### WINDOWS FOCUSED!! ###");
+    // window.focus();
+    window.webContents.focus();
+    console.log("FOCUS!!!");
   }, ms);
 };
 
