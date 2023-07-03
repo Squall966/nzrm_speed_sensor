@@ -721,3 +721,34 @@ h2 {
   left: 70%;
   transform: scale(0.8);
 }
+
+.loading {
+  position: fixed;
+  z-index: 99999;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loading .loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: fixed;
+  z-index: 99999;
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+}
+.loading .loading-logo {
+  width: 70vw;
+}
+.loading .now-loading {
+  color: #d2b48c;
+  text-transform: capitalize;
+  font-family: "Roboto";
+  font-weight: bold;
+  font-size: 50px;
+}

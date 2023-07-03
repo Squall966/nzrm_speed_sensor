@@ -56,6 +56,7 @@ class MainApp extends Base {
     this.maximum_top_speed = this.ipcSendSync("get-single-config", "maximum_top_speed");
 
     this.recorded_top_speed;
+    this.loading_delay = this.ipcSendSync("get-single-config", "loading_delay");
   }
   init() {
     console.log("### Main app class init ###");
@@ -457,5 +458,9 @@ class MainApp extends Base {
     gsap.to(sprint, { x: sprintPos.end_x, duration: sprintPos.duration, ease: ease });
     gsap.to(rugby, { x: rugbyPos.end_x, duration: rugbyPos.duration, ease: ease });
     gsap.to(kiwi, { x: kiwiPos.end_x, duration: kiwiPos.duration, ease: ease });
+  }
+
+  goLoading() {
+    barba.go("loading.html");
   }
 }

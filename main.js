@@ -22,14 +22,14 @@ storage.init();
 app.commandLine.appendSwitch("enable-features", "ElectronSerialChooser");
 
 // Hot Reload
-// if (isDev) {
-//   try {
-//     require("electron-reloader")(module, {
-//       // debug: true,
-//       watchRenderer: true,
-//     });
-//   } catch {}
-// }
+if (isDev) {
+  try {
+    require("electron-reloader")(module, {
+      // debug: true,
+      watchRenderer: true,
+    });
+  } catch {}
+}
 
 // -------- INDEX PAGE --------------------------
 // const index_page =`file://${__dirname}/src/index_surface.html`
@@ -305,6 +305,14 @@ ipcMain.on("go-home", (e, msg) => {
     windows[0].webContents.send("go-home", 1);
     windows[1].webContents.send("go-home", 1);
     console.log("### Go home signal ###");
+  }
+});
+
+ipcMain.on("go-loading", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("go-loading", 1);
+    windows[1].webContents.send("go-loading", 1);
+    console.log("### Go loading page signal ###");
   }
 });
 

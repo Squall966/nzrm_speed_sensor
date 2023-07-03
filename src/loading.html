@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="Squall Lion" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link rel="stylesheet" href="./css/styles.min.css" />
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/@barba/core/dist/barba.umd.js"></script>
+    <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+    <script src="../node_modules/progressbar.js/dist/progressbar.min.js"></script>
+    <script src="./js/base.js"></script>
+    <script src="./js/mainApp.js"></script>
+    <script src="./js/surface.js"></script>
+    <script src="./js/tv.js"></script>
+    <title>Electron Boilerplate 2023: MAIN - Surface</title>
+    <script>
+      const base = new Base();
+      const mainApp = new MainApp();
+      const surface = new Surface();
+    </script>
+  </head>
+  <body class="noSelect">
+    <!-- define the wrapper and the container -->
+    <div data-barba="wrapper" class="main-wrapper loading">
+      <!-- put here content that will not change between your pages, like <header> or <nav> -->
+      <!-- <div id="_surface-pro-res-ref"></div> -->
+
+      <div data-barba="container" data-barba-namespace="loading" class="main-container loading">
+        <!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
+        <div class="loading-container">
+          <img src="images/logo.svg" class="loading-logo" />
+          <p class="pulsing now-loading">Now loading...</p>
+        </div>
+      </div>
+    </div>
+    <script src="./js/barba.js"></script>
+  </body>
+</html>

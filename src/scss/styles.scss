@@ -691,3 +691,31 @@ h2 {
     transform: scale(0.8);
   }
 }
+
+.loading {
+  position: fixed;
+  z-index: 99999;
+  width: 100vw;
+  height: 100vh;
+  @include flexCenter();
+
+  .loading-container {
+    @include flexCenter();
+    flex-direction: column;
+    position: fixed;
+    z-index: 99999;
+    background-color: black;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .loading-logo {
+    width: 70vw;
+  }
+
+  .now-loading {
+    color: $nzrm-tan;
+    text-transform: capitalize;
+    @include mainFontB(50);
+  }
+}

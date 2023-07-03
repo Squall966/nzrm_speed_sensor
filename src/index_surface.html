@@ -92,6 +92,12 @@
           }
         });
 
+        mainApp.ipcListener("go-loading", (e, msg) => {
+          if (msg) {
+            mainApp.goLoading();
+          }
+        });
+
         mainApp.ipcListener("display-error-message", (e, msg) => {
           if (msg) {
             // console.log(msg);
