@@ -39,7 +39,7 @@ class Surface {
       }
     });
 
-    console.log("### Surface Class init ###");
+    console.log("### Surface Class init, go loading page ###");
   }
 
   goHome() {

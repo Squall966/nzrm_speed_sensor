@@ -85,7 +85,9 @@
 
         console.log("### Surface Home Page should init here");
         mainApp.init();
+
         startGameListener("speed_surface");
+
         mainApp.ipcListener("go-home", (e, msg) => {
           if (msg) {
             surface.goHome();
