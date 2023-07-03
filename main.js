@@ -33,8 +33,10 @@ if (isDev) {
 
 // -------- INDEX PAGE --------------------------
 // const index_page =`file://${__dirname}/src/index_surface.html`
-const index_page = `./src/index_surface.html`;
-// const index_page = `./src/error.html`;
+// const index_page = `./src/index_surface.html`;
+// const secondWinIndex = `file://${__dirname}/src/index_tv.html`;
+const index_page = `./src/loading.html`;
+const secondWinIndex = `file://${__dirname}/src/loading.html`;
 
 // -------- Logger --------------------------
 // logger(appDirectory);
@@ -204,7 +206,7 @@ app.whenReady().then(() => {
       secondWin.setAlwaysOnTop(true, "screen-saver");
     }
 
-    secondWin.loadURL(`file://${__dirname}/src/index_tv.html`);
+    secondWin.loadURL(secondWinIndex);
     windows = [...windows, secondWin];
 
     // secondWin.webContents.on("did-finish-load", () => {
@@ -302,8 +304,8 @@ ipcMain.on("start-game", (e, msg) => {
 
 ipcMain.on("go-home", (e, msg) => {
   if (msg) {
-    windows[0].webContents.send("go-home", 1);
-    windows[1].webContents.send("go-home", 1);
+    windows[0].webContents.send("go-home", "1");
+    windows[1].webContents.send("go-home", "2");
     console.log("### Go home signal ###");
   }
 });

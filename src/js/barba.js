@@ -1,5 +1,3 @@
-let is_loaded = false;
-
 const startGameListener = (page_to_go = null) => {
   console.log("### Start game listener");
   mainApp.ipcListener("start-game", (e, msg) => {
@@ -63,10 +61,6 @@ barba.init({
         };
         mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
         $("#surface-video").trigger("play");
-        if (!is_loaded) {
-          window.nzrm.send("go-loading", true);
-          is_loaded = true;
-        }
       },
     },
     {
@@ -119,7 +113,6 @@ barba.init({
         };
         mainApp.littleIconsAnimation(sprintPos, rugbyPos, kiwiPos);
         $("#tv-video").trigger("play");
-        // window.nzrm.send("go-loading", true);
       },
     },
     {
