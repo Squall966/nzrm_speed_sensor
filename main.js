@@ -82,7 +82,7 @@ function createWindow(width = null, height = null) {
   if (isDev) {
     mainWindow.webContents.openDevTools();
   } else {
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
     mainWindow.setAlwaysOnTop(true, "screen-saver");
   }
 
