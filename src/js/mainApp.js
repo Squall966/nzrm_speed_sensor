@@ -240,13 +240,28 @@ class MainApp extends Base {
       // console.log(
       //   `### Check is Stop Sending: ${_this.stopSendingSpeed} || Spd i: ${_this.current_speed_index}`
       // );
+
+      // if (!_this.stopSendingSpeed) {
+      //   if (parseInt(value) > 0) {
+      //     readable_value = [...readable_value, parseInt(value)];
+      //   }
+      //   if (value == "y") {
+      //     /**
+      //      * The end of the data is a "y", so we know we have got a full data now
+      //      * we should update the display and reset the array
+      //      */
+      //     sendSpeedToDisplay();
+      //   }
+      // }
+
       if (!_this.stopSendingSpeed) {
         if (parseInt(value) > 0) {
           readable_value = [...readable_value, parseInt(value)];
+          console.log("Value from the new sensor: ", readable_value);
         }
-        if (value == "y") {
+        if (value == " ") {
           /**
-           * The end of the data is a "y", so we know we have got a full data now
+           * The end of the data is a " "(blank), so we know we have got a full data now
            * we should update the display and reset the array
            */
           sendSpeedToDisplay();
