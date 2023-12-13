@@ -280,7 +280,8 @@ class MainApp extends Base {
 
     // console.log(`?????????????????? value = ${value}`);
     if (parseInt(value) > 0) {
-      const kmhVal = Math.floor(parseInt(value) * 1.61);
+      // const kmhVal = Math.floor(parseInt(value) * 1.61);
+      const kmhVal = Math.floor(parseInt(value));
 
       if (kmhVal > _this.top_speed) {
         _this.top_speed = parseInt(kmhVal);
