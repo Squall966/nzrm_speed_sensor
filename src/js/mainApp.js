@@ -50,14 +50,20 @@ class MainApp extends Base {
     this.listening_duration = this.ipcSendSync("get-single-config", "listening_duration"); // 0 = off;
     this.listening_duration_timeout = null;
 
-    this.stopSendingSpeed = false;
+    this.stopSendingSpeed = true;
 
     this.error_page_timeout = this.ipcSendSync("get-single-config", "error_page_timeout");
     this.maximum_top_speed = this.ipcSendSync("get-single-config", "maximum_top_speed");
 
     this.recorded_top_speed;
     this.loading_delay = this.ipcSendSync("get-single-config", "loading_delay");
+
+    this.bufferSize = 1024; //1kB
+    this.buffer = new ArrayBuffer(this.bufferSize);
+
+    this.readable_value = [];
   }
+
   init() {
     console.log("### Main app class init ###");
 
@@ -117,10 +123,12 @@ class MainApp extends Base {
         _this.reader.cancel();
         await _this.readableStreamClosed.catch(() => {
           // Ignore the error
+          console.log("Closing the readable steam and ignore error...");
         });
-        await _this.reader.close();
         await _this.port.close();
-
+        _this.connect_to_serial = false;
+        _this.stopSendingSpeed = false;
+        _this.resetAllSpeed();
         console.info("### Port is closed!! ###");
       }
     } catch (error) {
@@ -145,6 +153,8 @@ class MainApp extends Base {
        */
       if (_this.port) {
         console.log("### PORT exist, do not request again! Only listening... ###");
+        // console.log("### PORT is closed, opening port... ###");
+        // await _this.openPort();
         return false; // if the port is ready, return;
       }
       _this.port = await navigator.serial.requestPort();
@@ -153,30 +163,7 @@ class MainApp extends Base {
       // console.log(ports);
       // _this.port = ports[0];
 
-      if (_this.port) {
-        console.log(`### Port is connected:`);
-        console.log(_this.port);
-
-        await _this.port.open({
-          baudRate: 9600,
-          flowControl: "none",
-        });
-
-        console.log(`### Port is opened:`);
-
-        let settings = {};
-
-        if (localStorage.dtrOn == "true") settings.dataTerminalReady = true;
-        if (localStorage.rtsOn == "true") settings.requestToSend = true;
-        if (Object.keys(settings).length > 0) await _this.port.setSignals(settings);
-
-        _this.textEncoder = new TextEncoderStream();
-        _this.writableStreamClosed = _this.textEncoder.readable.pipeTo(_this.port.writable);
-        _this.writer = _this.textEncoder.writable.getWriter();
-        await _this.listenToPort();
-      } else {
-        console.log("No serial port is detected!");
-      }
+      await _this.openPort();
     } catch (error) {
       //   _this.dialogMessage("Serial Connection Failed: " + error);
       console.error("Serial Connection Failed: " + error);
@@ -195,14 +182,28 @@ class MainApp extends Base {
   async listenToPort() {
     const _this = this;
 
-    const textDecoder = new TextDecoderStream();
-    _this.readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
-    _this.reader = textDecoder.readable.getReader();
+    // const textDecoder = new TextDecoderStream();
+    // _this.readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
 
-    // const reader = _this.port.readable.getReader();
+    /* 
+    try {
+      _this.reader = textDecoder.readable.getReader({ mode: "byob" });
+    } catch (error) {
+      if (error instanceof TypeError) {
+        console.error("BYOB readers are not supported. Fallback to port.readable.getReader()");
+        _this.reader = textDecoder.readable.getReader();
+      }
+    }
+    */
+
+    _this.textDecoder = new TextDecoderStream();
+    _this.readableStreamClosed = _this.port.readable.pipeTo(_this.textDecoder.writable);
+    // const reader = textDecoder.readable
+    //   .pipeThrough(new TransformStream(new LineBreakTransformer()))
+    //   .getReader();
+    _this.reader = _this.textDecoder.readable.getReader();
 
     // Listen to data coming from the serial device.
-    let readable_value = [];
 
     /**
      * Newly added @ Jun 26
@@ -214,28 +215,65 @@ class MainApp extends Base {
        */
       // console.log("### Readable value ---- ");
       // console.log(readable_value);
-      const final_value = readable_value.join("");
+      const final_value = _this.readable_value.join("");
       // console.log("### Final value: ", final_value);
 
       /** Check if the final value is larger than the settings */
 
       _this.displaySpeed(final_value);
-      readable_value = [];
+      _this.readable_value = [];
     };
 
     while (true) {
       const { value, done } = await _this.reader.read();
       if (done) {
         // Allow the serial port to be closed later.
+        _this.reader.releaseLock();
+        break;
+      }
+
+      // if (value !== "" && value !== " ") console.log("Value: ", value);
+
+      if (_this.stopSendingSpeed === false || _this.stopSendingSpeed == "false") {
+        if (parseInt(value) >= 0) {
+          if (_this.readable_value.length >= 2) return;
+          _this.readable_value = [..._this.readable_value, parseInt(value)];
+          console.log("Value from the new sensor: ", _this.readable_value);
+        }
+        if (value == " ") {
+          // The end of the data is a " "(blank), so we know we have got a full data now
+          // we should update the display and reset the array
+          sendSpeedToDisplay();
+        }
+      } else {
+        _this.resetAllSpeed();
+        // console.warn(`Stop Sending Speed & reset. Recorded top speed: ${_this.recorded_top_speed}`);
+      }
+    }
+
+    /* 
+    while (true) {
+      const { value, done } = await _this.reader.read(new Uint8Array(_this.buffer));
+      if (done) {
+        // Allow the serial port to be closed later.
         console.log("[readLoop] DONE", done);
         _this.reader.releaseLock();
         break;
       }
+
+      if (value.buffer) {
+        _this.buffer = value.buffer;
+        console.log("Buffer: ", _this.buffer);
+      }
+
+      // if (value && value !== " ") {
+      //   console.log("Value: ", value);
+      // }
       // value is a string.
       // appendToTerminal(value);
 
       // console.log(`### Value from sensor: ${parseInt(value)}`);
-      // console.log(`### Value from sensor: ${value}`);
+      console.log(`### Value from sensor: ${value}`);
 
       // console.log(
       //   `### Check is Stop Sending: ${_this.stopSendingSpeed} || Spd i: ${_this.current_speed_index}`
@@ -246,10 +284,8 @@ class MainApp extends Base {
       //     readable_value = [...readable_value, parseInt(value)];
       //   }
       //   if (value == "y") {
-      //     /**
-      //      * The end of the data is a "y", so we know we have got a full data now
-      //      * we should update the display and reset the array
-      //      */
+      //      // The end of the data is a "y", so we know we have got a full data now
+      //      //we should update the display and reset the array
       //     sendSpeedToDisplay();
       //   }
       // }
@@ -260,27 +296,24 @@ class MainApp extends Base {
           console.log("Value from the new sensor: ", readable_value);
         }
         if (value == " ") {
-          /**
-           * The end of the data is a " "(blank), so we know we have got a full data now
-           * we should update the display and reset the array
-           */
+          // The end of the data is a " "(blank), so we know we have got a full data now
+          // we should update the display and reset the array
           sendSpeedToDisplay();
+          readable_value = [];
         }
       }
     } // while loop
+    */
   }
 
   displaySpeed(value) {
     const _this = this;
 
     if (value == " " || !value) {
-      // console.log("### No value!");
       return false;
     }
 
-    // console.log(`?????????????????? value = ${value}`);
     if (parseInt(value) > 0) {
-      // const kmhVal = Math.floor(parseInt(value) * 1.61);
       const kmhVal = Math.floor(parseInt(value));
 
       if (kmhVal > _this.top_speed) {
@@ -315,6 +348,7 @@ class MainApp extends Base {
            */
         }
         console.log(`### TOP SPEED: ${_this.top_speed}`);
+        console.log(`### RECORDED TOP SPEED: ${_this.recorded_top_speed}`);
       }
     }
   }
@@ -351,7 +385,7 @@ class MainApp extends Base {
        */
       window.nzrm.send("start-game", 1);
 
-      if (this.disableSerialForDev) {
+      if (_this.disableSerialForDev) {
         console.warn("### Serial port disable for dev ###");
       } else {
         /**
@@ -363,8 +397,9 @@ class MainApp extends Base {
         _this.isButtonActive = false;
         console.log("### Button deactivated ###");
 
-        if (!this.connect_to_serial) {
-          if (!(await this.connectSerial())) console.warn("### Port is not opened!! ###");
+        console.log("IS Serial CONNECTED?? ", _this.connect_to_serial);
+        if (!_this.connect_to_serial) {
+          if (!(await _this.connectSerial())) console.warn("### Serial is not connected ###");
         }
       }
 
@@ -373,8 +408,8 @@ class MainApp extends Base {
         "### Clear current speed index & reset stop-sending-speed while game starts  ###"
       );
       _this.current_speed_index = 0;
-      window.nzrm.send("stop-sending-speed", false);
-      _this.stopSendingSpeed = false;
+      // window.nzrm.send("stop-sending-speed", false);
+      // _this.stopSendingSpeed = false;
     }
     // });
   }
@@ -429,11 +464,19 @@ class MainApp extends Base {
 
     _this.ipcListener("top_speed", (e, msg) => {
       const el = $(".top-speed");
-      console.log(el);
+      // console.log(el);
       console.log("_this.topSpeedSignalToggle >>", _this.topSpeedSignalToggle);
       if (el && _this.topSpeedSignalToggle == true) {
         // console.log("Helloooooooooooooo  ", msg);
         el.html(msg);
+      }
+    });
+
+    _this.ipcListener("stop-sending-speed", (e, msg) => {
+      if (msg) {
+        console.log("Stop sending speed? ", msg);
+        if (msg == "false") _this.stopSendingSpeed = false;
+        console.log("_this.stopSendingSpeed? ", _this.stopSendingSpeed);
       }
     });
 
@@ -478,5 +521,43 @@ class MainApp extends Base {
 
   goLoading() {
     barba.go("loading.html");
+  }
+
+  async openPort() {
+    const _this = this;
+
+    if (_this.port) {
+      console.log(`### Port is connected:`);
+      console.log(_this.port.getInfo());
+
+      await _this.port.open({
+        baudRate: 9600,
+        flowControl: "none",
+        bufferSize: _this.bufferSize,
+      });
+
+      console.log(`### Port is opened:`);
+
+      let settings = {};
+
+      if (localStorage.dtrOn == "true") settings.dataTerminalReady = true;
+      if (localStorage.rtsOn == "true") settings.requestToSend = true;
+      if (Object.keys(settings).length > 0) await _this.port.setSignals(settings);
+
+      // _this.textEncoder = new TextEncoderStream();
+      // _this.writableStreamClosed = _this.textEncoder.readable.pipeTo(_this.port.writable);
+      // _this.writer = _this.textEncoder.writable.getWriter();
+      await _this.listenToPort();
+    } else {
+      console.log("No serial port is detected!");
+    }
+  }
+
+  resetAllSpeed() {
+    const _this = this;
+    _this.top_speed = 0;
+    _this.recorded_top_speed = 0;
+    _this.readable_value = [];
+    // console.log("### Reset All Speed ###");
   }
 }

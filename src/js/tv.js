@@ -75,7 +75,7 @@ class Tv {
     _this.progressBarEl = $("#progress");
   }
 
-  startTimerCircleAnimation(isNavigate = true) {
+  async startTimerCircleAnimation(isNavigate = true) {
     const _this = this;
 
     _this.progressBar.animate(
@@ -92,9 +92,15 @@ class Tv {
           $(`.${_this.progressBarTimerDigit}`).html(display_text);
         },
       },
-      function () {
+      async function () {
         console.log("### Progress bar animated done, proceed to next page. ###");
         console.log(`### Top Speed now: ${mainApp.top_speed} ###`);
+
+        // if (!mainApp.connect_to_serial) {
+        //   if (!(await mainApp.connectSerial())) console.warn("### Port is not opened!! ###");
+        // }
+
+        window.nzrm.send("stop-sending-speed", "false");
 
         // Delay a second before going to next page
         setTimeout(() => {
