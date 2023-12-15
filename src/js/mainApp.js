@@ -237,9 +237,7 @@ class MainApp extends Base {
       }
 
       const int = parseInt(value);
-      if (int >= 0) {
-        console.log("Parse value: ", int);
-      }
+      if (int >= 0) console.log("Parse value: ", int);
 
       if (_this.stopSendingSpeed === false || _this.stopSendingSpeed == "false") {
         if (int >= 0) {
@@ -320,48 +318,69 @@ class MainApp extends Base {
   displaySpeed(value) {
     const _this = this;
 
-    if (value == " " || !value) {
-      return false;
-    }
+    const speed = Math.floor(parseInt(value));
+    if (speed < 0 || isNaN(speed)) return false;
 
-    if (parseInt(value) > 0) {
-      const kmhVal = Math.floor(parseInt(value));
+    if (speed > _this.top_speed) {
+      _this.top_speed = speed; // New top speed
+      console.log("### Is send top speed? ", _this.topSpeedSignalToggle); //I should be checking the toggle and sending the data here
 
-      if (kmhVal > _this.top_speed) {
-        _this.top_speed = parseInt(kmhVal);
+      if (_this.topSpeedSignalToggle) {
+        window.nzrm.send("top_speed", _this.top_speed);
+        window.nzrm.send("recored-top-speed", _this.top_speed); // this is for TV.goHome() to check
+        console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
 
-        //I should be checking the toggle and sending the data here
-        console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
-        if (_this.topSpeedSignalToggle) {
-          window.nzrm.send("top_speed", _this.top_speed);
-          window.nzrm.send("recored-top-speed", _this.top_speed); // this is for TV.goHome() to check
-          console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
-          _this.current_speed_index += 1;
-          console.log(
-            `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
-          );
-          if (_this.current_speed_index >= _this.maximum_speed_index) {
-            window.nzrm.send("stop-sending-speed", true);
-            console.log(`### ${_this.current_speed_index} reaches limit, stop sending now!`);
-          }
-
-          /**
-           * Check if the top speed is over maximum top speed
-           * This checker was moved to "tv.gohome()"
-           */
-          /*
-          // console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
-          if (_this.top_speed >= _this.maximum_top_speed) {
-            console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
-            // window.nzrm.send("display-error-message", "### Error page testing");
-            // return false;
-          }
-           */
-        }
-        console.log(`### TOP SPEED: ${_this.top_speed}`);
-        console.log(`### RECORDED TOP SPEED: ${_this.recorded_top_speed}`);
+        // _this.current_speed_index += 1;
+        // console.log(
+        //   `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
+        // );
+        // if (_this.current_speed_index >= _this.maximum_speed_index) {
+        //   window.nzrm.send("stop-sending-speed", true);
+        //   console.log(`### ${_this.current_speed_index} reaches limit, stop sending now!`);
+        // }
       }
     }
+
+    // if (value == " " || !value) {
+    //   return false;
+    // }
+    /*
+            if (parseInt(value) > 0) {
+              const kmhVal = Math.floor(parseInt(value));
+
+              if (kmhVal > _this.top_speed) {
+                _this.top_speed = parseInt(kmhVal);
+
+                //I should be checking the toggle and sending the data here
+                console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
+                if (_this.topSpeedSignalToggle) {
+                  window.nzrm.send("top_speed", _this.top_speed);
+                  window.nzrm.send("recored-top-speed", _this.top_speed); // this is for TV.goHome() to check
+                  console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
+                  _this.current_speed_index += 1;
+                  console.log(
+                    `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
+                  );
+                  if (_this.current_speed_index >= _this.maximum_speed_index) {
+                    window.nzrm.send("stop-sending-speed", true);
+                    console.log(`### ${_this.current_speed_index} reaches limit, stop sending now!`);
+                  }
+
+                  // * Check if the top speed is over maximum top speed
+                  // * This checker was moved to "tv.gohome()"
+                  // console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
+                  // if (_this.top_speed >= _this.maximum_top_speed) {
+                  //   console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
+                  //   window.nzrm.send("display-error-message", "### Error page testing");
+                  //   return false;
+                  // }
+                  
+                }
+                console.log(`### TOP SPEED: ${_this.top_speed}`);
+                console.log(`### RECORDED TOP SPEED: ${_this.recorded_top_speed}`);
+              }
+            }
+          */
   }
 
   ipcListener(eventName, callback) {
@@ -485,13 +504,12 @@ class MainApp extends Base {
 
     _this.ipcListener("stop-sending-speed", (e, msg) => {
       if (msg) {
-        console.log("Stop sending speed? ", msg);
         if (msg == "true") {
           _this.stopSendingSpeed = true;
         } else {
           _this.stopSendingSpeed = false;
         }
-        console.log("_this.stopSendingSpeed? ", _this.stopSendingSpeed);
+        // console.log("EEE IPC _this.stopSendingSpeed? ", _this.stopSendingSpeed);
       }
     });
 
