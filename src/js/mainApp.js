@@ -232,7 +232,7 @@ class MainApp extends Base {
         break;
       }
 
-      if (value !== "" && value !== " ") console.log("Raw value: ", value);
+      if (value !== "" && value !== " ") console.log("Raw value: ", parseInt(value));
 
       if (_this.stopSendingSpeed === false || _this.stopSendingSpeed == "false") {
         if (parseInt(value) >= 0) {
@@ -240,10 +240,9 @@ class MainApp extends Base {
           _this.readable_value = [..._this.readable_value, parseInt(value)];
           console.log("Value from the new sensor: ", _this.readable_value);
         }
-        if (value == " ") {
+        if (value == "" || value == " " || value == "  " || parseInt(value) < 0) {
           // The end of the data is a " "(blank), so we know we have got a full data now
           // we should update the display and reset the array
-          console.warn("Data ended.");
           sendSpeedToDisplay();
         }
       } else {
