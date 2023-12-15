@@ -152,9 +152,9 @@ class MainApp extends Base {
        *
        */
       if (_this.port) {
-        console.log("### PORT exist, do not request again! Only listening... ###");
-        // console.log("### PORT is closed, opening port... ###");
-        // await _this.openPort();
+        // console.log("### PORT exist, do not request again! Only listening... ###");
+        console.log("### PORT is closed, opening port... ###");
+        await _this.openPort();
         return false; // if the port is ready, return;
       }
       _this.port = await navigator.serial.requestPort();
@@ -475,8 +475,21 @@ class MainApp extends Base {
     _this.ipcListener("stop-sending-speed", (e, msg) => {
       if (msg) {
         console.log("Stop sending speed? ", msg);
-        if (msg == "false") _this.stopSendingSpeed = false;
+        if (msg == "true") {
+          _this.stopSendingSpeed = true;
+        } else {
+          _this.stopSendingSpeed = false;
+        }
         console.log("_this.stopSendingSpeed? ", _this.stopSendingSpeed);
+      }
+    });
+
+    _this.ipcListener("close-port", async (e, msg) => {
+      if (msg) {
+        if (msg && _this.port) {
+          await _this.closeSerialPort();
+          console.warn("The Serial Port is closed.");
+        }
       }
     });
 

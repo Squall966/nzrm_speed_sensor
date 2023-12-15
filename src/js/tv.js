@@ -49,6 +49,11 @@ class Tv {
     console.log("### TV go home signal, the home should be 'index_tv.html' ###");
     window.nzrm.send("top-speed-toggle", "false");
     barba.go("index_tv.html");
+
+    // Stop serial port
+    window.nzrm.send("close-port", "close");
+    // Stop sending speed
+    window.nzrm.send("stop-sending-speed", true);
   }
 
   goErrorPage() {

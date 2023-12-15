@@ -13,7 +13,7 @@ const isDev = require("electron-is-dev");
 const logger = require("./modules/logger.js");
 // const { updater } = require("./modules/app_updater.js");
 // const db = require("./modules/database");
-const fs = require("fs");
+// const fs = require("fs");
 const Storage = require("./modules/Storage");
 
 const storage = new Storage();
@@ -78,11 +78,13 @@ function createWindow(width = null, height = null) {
   // and load the index.html of the app.
   mainWindow.loadFile(index_page);
   // mainWindow.loadFile("./src/index_surface.html");
+
   // Open the DevTools.
   if (isDev) {
     mainWindow.webContents.openDevTools();
   } else {
-    // mainWindow.webContents.openDevTools();
+    const if_dev_tool = storage.store?.get("dev_tool");
+    if (if_dev_tool == "true" || if_dev_tool == true) mainWindow.webContents.openDevTools();
     mainWindow.setAlwaysOnTop(true, "screen-saver");
   }
 
@@ -347,5 +349,13 @@ ipcMain.on("recored-top-speed", (e, msg) => {
     windows[0].webContents.send("recored-top-speed", msg);
     windows[1].webContents.send("recored-top-speed", msg);
     console.log(`### recored-top-speed: ${msg} ###`);
+  }
+});
+
+ipcMain.on("close-port", (e, msg) => {
+  if (msg) {
+    windows[0].webContents.send("close-port", msg);
+    windows[1].webContents.send("close-port", msg);
+    console.log(`### Close Port Signal ###`);
   }
 });

@@ -31,13 +31,13 @@ class Surface {
 
     _this.funFactsInit();
 
-    mainApp.ipcListener("stop-sending-speed", (e, msg) => {
-      console.log("### Stop sending signal set! ###");
-      if (msg) {
-        console.log(`### Stop sending speed signal: ${msg}`);
-        mainApp.stopSendingSpeed = msg;
-      }
-    });
+    // mainApp.ipcListener("stop-sending-speed", (e, msg) => {
+    //   console.log("### Stop sending signal set! ###");
+    //   if (msg) {
+    //     console.log(`### Stop sending speed signal: ${msg}`);
+    //     mainApp.stopSendingSpeed = msg;
+    //   }
+    // });
 
     console.log("### Surface Class init, go loading page ###");
   }
@@ -60,7 +60,6 @@ class Surface {
       mainApp.listening_duration_timeout = null;
     }
     // mainApp.stopSendingSpeed = false; /** Make sure the speed is sent */
-    // window.nzrm.send("stop-sending-speed", false);
 
     barba.go("index_surface.html");
   }
