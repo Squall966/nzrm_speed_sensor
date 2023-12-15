@@ -181,6 +181,7 @@ class MainApp extends Base {
 
   async listenToPort() {
     const _this = this;
+    let final_value;
 
     // const textDecoder = new TextDecoderStream();
     // _this.readableStreamClosed = _this.port.readable.pipeTo(textDecoder.writable);
@@ -215,13 +216,16 @@ class MainApp extends Base {
        */
       // console.log("### Readable value ---- ");
       // console.log(readable_value);
-      const final_value = _this.readable_value.join("");
+      // const final_value = _this.readable_value.join("");
       // console.log("### Final value: ", final_value);
 
       /** Check if the final value is larger than the settings */
+      final_value = _this.readable_value.join("");
 
-      _this.displaySpeed(final_value);
-      _this.readable_value = [];
+      if (final_value) {
+        _this.displaySpeed(final_value);
+        _this.readable_value = [];
+      }
     };
 
     while (true) {
@@ -232,7 +236,10 @@ class MainApp extends Base {
         break;
       }
 
-      if (value !== "" && value !== " ") console.log("Raw value: ", parseInt(value));
+      const int = parseInt(value);
+      if (int >= 0) {
+        console.log("Parse value: ", parseInt(value));
+      }
 
       if (_this.stopSendingSpeed === false || _this.stopSendingSpeed == "false") {
         if (parseInt(value) >= 0) {
@@ -240,9 +247,13 @@ class MainApp extends Base {
           _this.readable_value = [..._this.readable_value, parseInt(value)];
           console.log("Value from the new sensor: ", _this.readable_value);
         }
-        if (value == "" || value == " " || value == "  " || parseInt(value) < 0) {
+        if (parseInt(value) < 0 || isNaN(parseInt(value))) {
           // The end of the data is a " "(blank), so we know we have got a full data now
           // we should update the display and reset the array
+          console.warn("Data Ended or No Data");
+          if (final_value) {
+            if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
+          }
           sendSpeedToDisplay();
         }
       } else {
