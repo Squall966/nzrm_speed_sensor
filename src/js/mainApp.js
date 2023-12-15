@@ -238,19 +238,19 @@ class MainApp extends Base {
 
       const int = parseInt(value);
       if (int >= 0) {
-        console.log("Parse value: ", parseInt(value));
+        console.log("Parse value: ", int);
       }
 
       if (_this.stopSendingSpeed === false || _this.stopSendingSpeed == "false") {
-        if (parseInt(value) >= 0) {
+        if (int >= 0) {
           if (_this.readable_value.length >= 2) return;
-          _this.readable_value = [..._this.readable_value, parseInt(value)];
+          _this.readable_value = [..._this.readable_value, int];
           console.log("Value from the new sensor: ", _this.readable_value);
         }
-        if (parseInt(value) < 0 || isNaN(parseInt(value))) {
+        if (int < 0 || isNaN(int)) {
           // The end of the data is a " "(blank), so we know we have got a full data now
           // we should update the display and reset the array
-          console.warn("Data Ended or No Data");
+          // console.warn("Data Ended or No Data");
           if (final_value) {
             if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
           }
@@ -342,7 +342,7 @@ class MainApp extends Base {
           );
           if (_this.current_speed_index >= _this.maximum_speed_index) {
             window.nzrm.send("stop-sending-speed", true);
-            console.log(`### ${mainApp.current_speed_index} reaches limit, stop sending now!`);
+            console.log(`### ${_this.current_speed_index} reaches limit, stop sending now!`);
           }
 
           /**
@@ -557,7 +557,7 @@ class MainApp extends Base {
       await _this.port.open({
         baudRate: 9600,
         flowControl: "none",
-        bufferSize: _this.bufferSize,
+        stopBits: 1,
       });
 
       console.log(`### Port is opened:`);
