@@ -225,8 +225,10 @@ class MainApp extends Base {
 
       // Check if the final value is larger than the settings
       final_value = _this.readable_value.join("");
-      if (final_value >= _this.maximum_top_speed && _this.top_speed_lock == "true")
+      if (final_value >= _this.maximum_top_speed && _this.top_speed_lock == "true") {
         final_value = _this.maximum_top_speed;
+        console.warn(`Top speed lock activated: ${final_value}`);
+      }
 
       if (final_value) {
         _this.displaySpeed(final_value);
@@ -264,10 +266,10 @@ class MainApp extends Base {
             if (int < 0 || isNaN(int)) {
               // The end of the data is a " "(blank), so we know we have got a full data now
               // we should update the display and reset the array
-              console.warn("Data Ended or No Data");
               // if (final_value) {
               //   if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
               // }
+              // console.warn("Data Ended or No Data");
               sendSpeedToDisplay();
             }
           }
