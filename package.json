@@ -1,6 +1,6 @@
 {
   "name": "nzrm_speed_sensor_2023",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "The Speed Detector/Sensor for New Zealand Rugby Museum 2023.",
   "main": "main.js",
   "scripts": {
