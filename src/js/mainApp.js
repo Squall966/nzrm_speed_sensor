@@ -127,7 +127,7 @@ class MainApp extends Base {
         });
         await _this.port.close();
         _this.connect_to_serial = false;
-        _this.stopSendingSpeed = false;
+        _this.stopSendingSpeed = true;
         _this.resetAllSpeed();
         console.info("### Port is closed!! ###");
       }
@@ -197,15 +197,18 @@ class MainApp extends Base {
     }
     */
 
-    _this.textDecoder = new TextDecoderStream();
-    _this.readableStreamClosed = _this.port.readable.pipeTo(_this.textDecoder.writable);
-    // const reader = textDecoder.readable
-    //   .pipeThrough(new TransformStream(new LineBreakTransformer()))
-    //   .getReader();
-    _this.reader = _this.textDecoder.readable.getReader();
+    try {
+      _this.textDecoder = new TextDecoderStream();
+      _this.readableStreamClosed = _this.port.readable.pipeTo(_this.textDecoder.writable);
+      // const reader = textDecoder.readable
+      //   .pipeThrough(new TransformStream(new LineBreakTransformer()))
+      //   .getReader();
+      _this.reader = _this.textDecoder.readable.getReader();
+    } catch (error) {
+      return false;
+    }
 
     // Listen to data coming from the serial device.
-
     /**
      * Newly added @ Jun 26
      */
@@ -228,35 +231,41 @@ class MainApp extends Base {
       }
     };
 
-    while (true) {
-      const { value, done } = await _this.reader.read();
-      if (done) {
-        // Allow the serial port to be closed later.
-        _this.reader.releaseLock();
-        break;
-      }
-
-      const int = parseInt(value);
-      if (int >= 0) console.log("Parse value: ", int);
-
-      if (_this.stopSendingSpeed === false || _this.stopSendingSpeed == "false") {
-        if (int >= 0) {
-          if (_this.readable_value.length >= 2) return;
-          _this.readable_value = [..._this.readable_value, int];
-          console.log("Value from the new sensor: ", _this.readable_value);
-        }
-        if (int < 0 || isNaN(int)) {
-          // The end of the data is a " "(blank), so we know we have got a full data now
-          // we should update the display and reset the array
-          // console.warn("Data Ended or No Data");
-          if (final_value) {
-            if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
+    console.log(`Check if stop sending ${_this.stopSendingSpeed}`);
+    if (_this.stopSendingSpeed == false || _this.stopSendingSpeed == "false") {
+      _this.readable_value = [];
+      try {
+        while (true) {
+          const { value, done } = await _this.reader.read();
+          if (done) {
+            // Allow the serial port to be closed later.
+            _this.reader.releaseLock();
+            break;
           }
-          sendSpeedToDisplay();
-        }
-      } else {
-        _this.resetAllSpeed();
-        // console.warn(`Stop Sending Speed & reset. Recorded top speed: ${_this.recorded_top_speed}`);
+
+          const int = parseInt(value);
+          console.log("Parse value: ", int);
+          console.log(`Raw value: ${value} | Length ${value.length}`);
+          if (int >= 0) {
+            // console.log("Parse value: ", int);
+            if (_this.readable_value.length >= 2) return;
+            _this.readable_value = [..._this.readable_value, int];
+            console.log(
+              `Value from the new sensor:  ${_this.readable_value} / ${_this.stopSendingSpeed}`
+            );
+          }
+          if (int < 0 || isNaN(int)) {
+            // The end of the data is a " "(blank), so we know we have got a full data now
+            // we should update the display and reset the array
+            console.warn("Data Ended or No Data");
+            // if (final_value) {
+            //   if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
+            // }
+            sendSpeedToDisplay();
+          }
+        } // while loop
+      } catch (error) {
+        console.error("Serial port data error: ", error);
       }
     }
 
@@ -321,6 +330,8 @@ class MainApp extends Base {
     const speed = Math.floor(parseInt(value));
     if (speed < 0 || isNaN(speed)) return false;
 
+    console.log(`### CHECKER | Speed: ${speed} vs this.top_speed: ${_this.top_speed} ### `);
+
     if (speed > _this.top_speed) {
       _this.top_speed = speed; // New top speed
       console.log("### Is send top speed? ", _this.topSpeedSignalToggle); //I should be checking the toggle and sending the data here
@@ -340,47 +351,6 @@ class MainApp extends Base {
         // }
       }
     }
-
-    // if (value == " " || !value) {
-    //   return false;
-    // }
-    /*
-            if (parseInt(value) > 0) {
-              const kmhVal = Math.floor(parseInt(value));
-
-              if (kmhVal > _this.top_speed) {
-                _this.top_speed = parseInt(kmhVal);
-
-                //I should be checking the toggle and sending the data here
-                console.log("### Is send top speed? ", _this.topSpeedSignalToggle);
-                if (_this.topSpeedSignalToggle) {
-                  window.nzrm.send("top_speed", _this.top_speed);
-                  window.nzrm.send("recored-top-speed", _this.top_speed); // this is for TV.goHome() to check
-                  console.log("### Top Speed Sent! The top speed is " + _this.top_speed + " ###");
-                  _this.current_speed_index += 1;
-                  console.log(
-                    `### mainApp.current_speed_index increment here: ${_this.current_speed_index} vs LIMIT ${_this.maximum_speed_index} ###`
-                  );
-                  if (_this.current_speed_index >= _this.maximum_speed_index) {
-                    window.nzrm.send("stop-sending-speed", true);
-                    console.log(`### ${_this.current_speed_index} reaches limit, stop sending now!`);
-                  }
-
-                  // * Check if the top speed is over maximum top speed
-                  // * This checker was moved to "tv.gohome()"
-                  // console.log(`?????????????? Doggy top speed?????? ${_this.top_speed}`);
-                  // if (_this.top_speed >= _this.maximum_top_speed) {
-                  //   console.warn(`### Top speed ${_this.top_speed} is doggy, go to error page ###`);
-                  //   window.nzrm.send("display-error-message", "### Error page testing");
-                  //   return false;
-                  // }
-                  
-                }
-                console.log(`### TOP SPEED: ${_this.top_speed}`);
-                console.log(`### RECORDED TOP SPEED: ${_this.recorded_top_speed}`);
-              }
-            }
-          */
   }
 
   ipcListener(eventName, callback) {
@@ -497,17 +467,22 @@ class MainApp extends Base {
       // console.log(el);
       console.log("_this.topSpeedSignalToggle >>", _this.topSpeedSignalToggle);
       if (el && _this.topSpeedSignalToggle == true) {
-        // console.log("Helloooooooooooooo  ", msg);
         el.html(msg);
       }
     });
 
-    _this.ipcListener("stop-sending-speed", (e, msg) => {
+    _this.ipcListener("stop-sending-speed", async (e, msg) => {
       if (msg) {
-        if (msg == "true") {
-          _this.stopSendingSpeed = true;
-        } else {
-          _this.stopSendingSpeed = false;
+        switch (msg) {
+          case true:
+          case "true":
+            _this.stopSendingSpeed = true;
+            break;
+          case false:
+          case "false":
+            _this.stopSendingSpeed = false;
+            await _this.listenToPort();
+            break;
         }
         // console.log("EEE IPC _this.stopSendingSpeed? ", _this.stopSendingSpeed);
       }
@@ -575,10 +550,8 @@ class MainApp extends Base {
       await _this.port.open({
         baudRate: 9600,
         flowControl: "none",
-        stopBits: 1,
+        bufferSize: _this.bufferSize,
       });
-
-      console.log(`### Port is opened:`);
 
       let settings = {};
 
@@ -589,9 +562,10 @@ class MainApp extends Base {
       // _this.textEncoder = new TextEncoderStream();
       // _this.writableStreamClosed = _this.textEncoder.readable.pipeTo(_this.port.writable);
       // _this.writer = _this.textEncoder.writable.getWriter();
-      await _this.listenToPort();
+      // await _this.listenToPort();
+      console.log(`### Port is opened ###`);
     } else {
-      console.log("No serial port is detected!");
+      console.error("No serial port is detected!");
     }
   }
 
