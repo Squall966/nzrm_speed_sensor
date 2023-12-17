@@ -54,6 +54,7 @@ class MainApp extends Base {
 
     this.error_page_timeout = this.ipcSendSync("get-single-config", "error_page_timeout");
     this.maximum_top_speed = this.ipcSendSync("get-single-config", "maximum_top_speed");
+    this.top_speed_lock = this.ipcSendSync("get-single-config", "top_speed_lock");
 
     this.recorded_top_speed;
     this.loading_delay = this.ipcSendSync("get-single-config", "loading_delay");
@@ -222,8 +223,10 @@ class MainApp extends Base {
       // const final_value = _this.readable_value.join("");
       // console.log("### Final value: ", final_value);
 
-      /** Check if the final value is larger than the settings */
+      // Check if the final value is larger than the settings
       final_value = _this.readable_value.join("");
+      if (final_value >= _this.maximum_top_speed && _this.top_speed_lock == "true")
+        final_value = _this.maximum_top_speed;
 
       if (final_value) {
         _this.displaySpeed(final_value);
@@ -243,25 +246,30 @@ class MainApp extends Base {
             break;
           }
 
-          const int = parseInt(value);
-          console.log("Parse value: ", int);
-          console.log(`Raw value: ${value} | Length ${value.length}`);
-          if (int >= 0) {
-            // console.log("Parse value: ", int);
-            if (_this.readable_value.length >= 2) return;
-            _this.readable_value = [..._this.readable_value, int];
-            console.log(
-              `Value from the new sensor:  ${_this.readable_value} / ${_this.stopSendingSpeed}`
-            );
-          }
-          if (int < 0 || isNaN(int)) {
-            // The end of the data is a " "(blank), so we know we have got a full data now
-            // we should update the display and reset the array
-            console.warn("Data Ended or No Data");
-            // if (final_value) {
-            //   if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
-            // }
-            sendSpeedToDisplay();
+          const trim_value = value.trim();
+          let int;
+          console.log(`Raw value: ${trim_value} | Length ${trim_value.length}`);
+          if (trim_value.length > 0) {
+            int = parseInt(trim_value);
+            console.log("Parse value: ", int);
+            if (int >= 0) {
+              // console.log("Parse value: ", int);
+              if (_this.readable_value.length >= 2) return;
+              _this.readable_value = [..._this.readable_value, int];
+              console.log(
+                `Value from the new sensor:  ${_this.readable_value} / ${_this.stopSendingSpeed}`
+              );
+            }
+          } else {
+            if (int < 0 || isNaN(int)) {
+              // The end of the data is a " "(blank), so we know we have got a full data now
+              // we should update the display and reset the array
+              console.warn("Data Ended or No Data");
+              // if (final_value) {
+              //   if (parseInt(final_value) == parseInt(_this.readable_value.join(""))) return; // check if the final value is the same
+              // }
+              sendSpeedToDisplay();
+            }
           }
         } // while loop
       } catch (error) {
