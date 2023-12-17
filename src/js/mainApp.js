@@ -223,9 +223,10 @@ class MainApp extends Base {
       // const final_value = _this.readable_value.join("");
       // console.log("### Final value: ", final_value);
 
+      // console.log(`### Top speed lock?: ${_this.top_speed_lock}, ${typeof _this.top_speed_lock}`);
       // Check if the final value is larger than the settings
       final_value = _this.readable_value.join("");
-      if (final_value >= _this.maximum_top_speed && _this.top_speed_lock == "true") {
+      if (final_value >= _this.maximum_top_speed && _this.top_speed_lock == true) {
         final_value = _this.maximum_top_speed;
         console.warn(`Top speed lock activated: ${final_value}`);
       }
