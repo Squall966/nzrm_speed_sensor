@@ -14,6 +14,7 @@ class Storage {
       maximum_speed_index: 3,
       error_page_timeout: 5,
       maximum_top_speed: 35,
+      top_speed_lock: true,
       loading_delay: 180,
     };
   }
