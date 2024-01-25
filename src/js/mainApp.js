@@ -55,6 +55,10 @@ class MainApp extends Base {
     this.error_page_timeout = this.ipcSendSync("get-single-config", "error_page_timeout");
     this.maximum_top_speed = this.ipcSendSync("get-single-config", "maximum_top_speed");
     this.top_speed_lock = this.ipcSendSync("get-single-config", "top_speed_lock");
+    this.averange_random_speed_featured = this.ipcSendSync(
+      "get-single-config",
+      "averange_random_speed_featured"
+    );
 
     this.recorded_top_speed;
     this.loading_delay = this.ipcSendSync("get-single-config", "loading_delay");
@@ -226,9 +230,19 @@ class MainApp extends Base {
       // console.log(`### Top speed lock?: ${_this.top_speed_lock}, ${typeof _this.top_speed_lock}`);
       // Check if the final value is larger than the settings
       final_value = _this.readable_value.join("");
-      if (final_value >= _this.maximum_top_speed && _this.top_speed_lock == true) {
-        final_value = _this.maximum_top_speed;
-        console.warn(`Top speed lock activated: ${final_value}`);
+      if (final_value >= _this.maximum_top_speed) {
+        // We are going to choose if we are showing the maximum top speed or giving it a resonable average speed
+        switch (true) {
+          case _this.top_speed_lock == true:
+            final_value = _this.maximum_top_speed;
+            console.warn(`Top speed lock activated: ${final_value}`);
+            break;
+          case _this.averange_random_speed_featured == true:
+          case _this.averange_random_speed_featured == true && _this.top_speed_lock == true:
+            final_value = base.getRandomIntInclusive(8, 15);
+            console.warn(`Averange random speed activated: ${final_value}`);
+            break;
+        }
       }
 
       if (final_value) {
