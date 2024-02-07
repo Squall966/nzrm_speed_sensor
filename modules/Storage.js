@@ -15,8 +15,9 @@ class Storage {
       error_page_timeout: 5,
       maximum_top_speed: 35,
       top_speed_lock: true,
-      averange_random_speed_featured: true,
+      averange_random_speed_featured: false,
       loading_delay: 180,
+      if_dev_tool: false,
     };
   }
 
